@@ -12,9 +12,48 @@ namespace RestaurantInformationSystem
 {
     public partial class Form1 : Form
     {
+        private TableTerminal table1;
+
+        internal TableTerminal Table1 { get => table1; set => table1 = value; }
+
         public Form1()
         {
             InitializeComponent();
+            Table1 = new TableTerminal(1, true);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Table1.getInput(input.Text);
+            output.Text = Table1.renderUI();
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            output.Text = Table1.menuDisplay();
+        }
+
+        private void input_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            this.Hide();
+            Form2 f2 = new Form2();
+            f2.ShowDialog();
+            this.Close();
         }
     }
 }

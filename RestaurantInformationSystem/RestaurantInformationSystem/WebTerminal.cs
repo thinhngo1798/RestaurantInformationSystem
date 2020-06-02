@@ -6,7 +6,15 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    class WebTerminal
+    public class WebTerminal : OrderingInterface
     {
+        private int _webTerminalNumber;
+
+        public int WebTerminalNumber { get => _webTerminalNumber; set => _webTerminalNumber = value; }
+        public WebTerminal(int webTerminalNumber)
+        {
+            WebTerminalNumber = webTerminalNumber;
+            DineInFlag = false;
+        }
     }
 }

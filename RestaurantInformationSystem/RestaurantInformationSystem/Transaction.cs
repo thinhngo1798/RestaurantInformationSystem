@@ -6,7 +6,28 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    class TableTerminal
+    public class Transaction
     {
+        private string _status;
+        private double _cost;
+        private DateTime _createTime;
+        private DateTime _paymentTime;
+        public Transaction(double cost)
+        {
+            Status = "PENDING";
+            Cost = cost;
+            CreateTime = DateTime.Now;
+           
+        }
+        public void payTransaction()
+        {
+            Status = "PAID";
+            PaymentTime = DateTime.Now;
+        }
+
+        public string Status { get => _status; set => _status = value; }
+        public double Cost { get => _cost; set => _cost = value; }
+        public DateTime CreateTime { get => _createTime; set => _createTime = value; }
+        public DateTime PaymentTime { get => _paymentTime; set => _paymentTime = value; }
     }
 }

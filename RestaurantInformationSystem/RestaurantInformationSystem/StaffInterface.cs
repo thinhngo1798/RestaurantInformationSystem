@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    class TableTerminal
+    class StaffInterface
     {
     }
 }
