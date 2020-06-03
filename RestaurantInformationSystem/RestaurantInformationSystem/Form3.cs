@@ -31,18 +31,28 @@ namespace RestaurantInformationSystem
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Restaurant.CashierTerminal.OutputString = "";
             output.Text = Restaurant.CashierTerminal.renderUI();
         }
 
         private void enter_Click(object sender, EventArgs e)
         {
-            Restaurant.CashierTerminal.getInput(input.Text);
-            output.Text = Restaurant.CashierTerminal.renderUI();
+            if (Restaurant.Database.CurrentFunction == "OrderFunction")
+            {
+                Restaurant.CashierTerminal.getInput(input.Text);
+                output.Text = Restaurant.CashierTerminal.renderUI();
+            }
+            else if (Restaurant.Database.CurrentFunction == "ReservationFunction")
+            {
+                Restaurant.CashierTerminal.getReservationInput(input.Text);
+                Restaurant.CashierTerminal.renderReservationUI();
+                output.Text = Restaurant.CashierTerminal.OutputString;
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-           
+            Restaurant.Database.CurrentFunction = "OrderFunction";
             output.Text =  Restaurant.CashierTerminal.displayOrder();
         }
 
@@ -54,6 +64,20 @@ namespace RestaurantInformationSystem
         private void output_TextChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            Restaurant.Database.CurrentFunction = "ReservationFunction";
+            output.Text = Restaurant.CashierTerminal.retreiveReservation();
+        }
+
+        private void button5_Click(object sender, EventArgs e)
+        {
+            Restaurant.Database.CurrentFunction = "ReservationFunction";
+            Restaurant.CashierTerminal.OutputString = "";
+            Restaurant.CashierTerminal.renderReservationUI();
+            output.Text = Restaurant.CashierTerminal.OutputString;
         }
     }
 }

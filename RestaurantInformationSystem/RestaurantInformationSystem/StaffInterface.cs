@@ -9,12 +9,12 @@ namespace RestaurantInformationSystem
     public class StaffInterface : UserInterface
     {
         private Database _database;
-        private string _state;
+        private string _stateForStatus;
         private int _selectedID;
         private string _newStatus;
         private string _outputString;
         public Database Database { get => _database; set => _database = value; }
-        public string State { get => _state; set => _state = value; }
+        public string StateForStatus { get => _stateForStatus; set => _stateForStatus = value; }
         public int SelectedID { get => _selectedID; set => _selectedID = value; }
         public string NewStatus { get => _newStatus; set => _newStatus = value; }
         public string OutputString { get => _outputString; set => _outputString = value; }
@@ -24,24 +24,24 @@ namespace RestaurantInformationSystem
         public StaffInterface(Database database)
         {
             Database = database;
-            State = "select";
+            StateForStatus = "select";
         }
         public override void getInput(string input)
         {
             if (input == "-1")
             {
                 OutputString = "You have been quit the current request";
-                State = "select";
+                StateForStatus = "select";
             }
             else
             {
-                if (State == "select")
+                if (StateForStatus == "select")
                 {
                     SelectedID = int.Parse(input);
-                    State = "done";
+                    StateForStatus = "done";
                     OutputString = "Please enter the new status";
                 }
-                else if (State == "done")
+                else if (StateForStatus == "done")
                 {
                     OutputString = "Your request is done";
                     NewStatus = input;
@@ -78,7 +78,7 @@ namespace RestaurantInformationSystem
         }
         public override string renderUI()
         {
-          if (State == "select")
+          if (StateForStatus == "select")
             {
                 OutputString = "You have chosen the Change Status Function"
                 + Environment.NewLine + "Please enter the order Id: "
