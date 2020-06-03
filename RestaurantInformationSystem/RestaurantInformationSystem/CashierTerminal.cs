@@ -6,7 +6,14 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    class CashierTerminal
+    public class CashierTerminal : StaffInterface
     {
+        private int cashierId;
+
+        public int CashierId { get => cashierId; set => cashierId = value; }
+        public CashierTerminal(int id,Database database) :base(database)
+        {
+            CashierId = id;
+        }
     }
 }

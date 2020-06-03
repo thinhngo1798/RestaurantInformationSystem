@@ -12,10 +12,14 @@ namespace RestaurantInformationSystem
         private double _cost;
         private DateTime _createTime;
         private DateTime _paymentTime;
-        public Transaction(double cost)
+        public Transaction(List<MenuItem> orderItems)
         {
             Status = "PENDING";
-            Cost = cost;
+            Cost = 0.0;
+            foreach (MenuItem item in orderItems)
+            {
+                Cost += item.Price;
+            }
             CreateTime = DateTime.Now;
            
         }

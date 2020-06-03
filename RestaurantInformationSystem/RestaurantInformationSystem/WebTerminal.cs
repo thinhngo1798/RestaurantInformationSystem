@@ -11,7 +11,7 @@ namespace RestaurantInformationSystem
         private int _webTerminalNumber;
 
         public int WebTerminalNumber { get => _webTerminalNumber; set => _webTerminalNumber = value; }
-        public WebTerminal(int webTerminalNumber)
+        public WebTerminal(int webTerminalNumber, Database database) : base(database)
         {
             WebTerminalNumber = webTerminalNumber;
             DineInFlag = false;

@@ -8,18 +8,14 @@ namespace RestaurantInformationSystem
 {
     public class OrderingInterface : UserInterface
     {
-        private List<Order> _orders;
-        private Menu _menu;
+        private Database _database;
         private bool _dineInFlag = true;
-
         public bool DineInFlag { get => _dineInFlag; set => _dineInFlag = value; }
-        internal List<Order> Orders { get => _orders; set => _orders = value; }
-        internal Menu Menu { get => _menu; set => _menu = value; }
+        public Database Database { get => _database; set => _database = value; }
 
-        public OrderingInterface()
+        public OrderingInterface(Database database)
         {
-            Menu = new Menu();
-            Orders = new List<Order>();
+            Database = database;
         }
         public override void getInput(string input)
         {
@@ -28,7 +24,7 @@ namespace RestaurantInformationSystem
         public override string renderUI()
         
         {
-            int currentOrderId = Orders.Count();
+            int currentOrderId = Database.Orders.Count();
             string orderResult = "";
             if (currentOrderId ==0 )
             {
@@ -39,12 +35,12 @@ namespace RestaurantInformationSystem
                 orderResult = "Id:" + currentOrderId +Environment.NewLine;
                 orderResult += "Item:" +Environment.NewLine;
                 
-                foreach (MenuItem item in Orders[(currentOrderId - 1)].MenuItem)
+                foreach (MenuItem item in Database.Orders[(currentOrderId - 1)].MenuItems)
                 {
                     orderResult += item.Name +"     Price:" + item.Price  + "       Waiting time:" + item.WaitingTime +" mins" +Environment.NewLine;
                 }
-                orderResult += "Status:" + Orders[currentOrderId - 1].Status + Environment.NewLine;
-                orderResult += "Transaction Status:" + Orders[currentOrderId - 1].Transaction.Status + Environment.NewLine;
+                orderResult += "Status:" + Database.Orders[currentOrderId - 1].Status + Environment.NewLine;
+                orderResult += "Transaction Status:" + Database.Orders[currentOrderId - 1].Transaction.Status + Environment.NewLine;
             }
             orderResult += "Order has been accepted"; 
             return orderResult;
@@ -58,7 +54,7 @@ namespace RestaurantInformationSystem
         public int calculateWaitingTime(MenuItem menuItem)
         {
             int time = 0;
-            foreach (MenuItem item in Menu.MenuList)
+            foreach (MenuItem item in Database.Menu.MenuList)
             {
                 if (item == menuItem)
                     time += item.WaitingTime;
@@ -69,7 +65,7 @@ namespace RestaurantInformationSystem
         public string menuDisplay()
         {
             string menuInformation = "";
-            foreach (MenuItem item in Menu.MenuList)
+            foreach (MenuItem item in Database.Menu.MenuList)
             {
                 menuInformation += item.Id +"       Name:" +item.Name + "     Price:" + item.Price + "$       Waiting time:" + item.WaitingTime + Environment.NewLine;
             }
@@ -83,21 +79,18 @@ namespace RestaurantInformationSystem
         public void createOrder(string input, bool dineInFlag )
         {
             List<MenuItem> orderItems = new List<MenuItem>();
-            Order newOrder =null;
             for (int i = 0; i < input.Length; i++)
             {
-                foreach (MenuItem item in Menu.MenuList)
+                foreach (MenuItem item in Database.Menu.MenuList)
                 {
                     char character = input[i];
                     if (character.ToString() == item.Id.ToString())
                         orderItems.Add(item);
                 }
             }
-            foreach (MenuItem item in orderItems)
-            {
-                newOrder = new Order(item, dineInFlag, orderItems); 
-            }
-            Orders.Add(newOrder);
+            int orderId = Database.Orders.Count();
+            Order newOrder = new Order(orderId+1,dineInFlag, orderItems);
+            Database.Orders.Add(newOrder);
         }
     }
 }

@@ -6,7 +6,86 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    class StaffInterface
+    public class StaffInterface : UserInterface
     {
+        private Database _database;
+        private string _state;
+        private int _selectedID;
+        private string _newStatus;
+        private string _outputString;
+        public Database Database { get => _database; set => _database = value; }
+        public string State { get => _state; set => _state = value; }
+        public int SelectedID { get => _selectedID; set => _selectedID = value; }
+        public string NewStatus { get => _newStatus; set => _newStatus = value; }
+        public string OutputString { get => _outputString; set => _outputString = value; }
+
+        public enum StateName { receive, select, type, done };
+
+        public StaffInterface(Database database)
+        {
+            Database = database;
+            State = "select";
+        }
+        public override void getInput(string input)
+        {
+            if (input == "-1")
+            {
+                OutputString = "You have been quit the current request";
+                State = "select";
+            }
+            else
+            {
+                if (State == "select")
+                {
+                    SelectedID = int.Parse(input);
+                    State = "done";
+                    OutputString = "Please enter the new status";
+                }
+                else if (State == "done")
+                {
+                    OutputString = "Your request is done";
+                    NewStatus = input;
+                    changeOrderStatus();
+                }
+                else
+                {
+                    OutputString = "There is something wrong";
+                }
+            }
+
+        }
+        public string displayOrder()
+        {
+            string result ="";
+            foreach (Order order in Database.Orders)
+            {
+                result += "Order number " + order.Id + " is:" + Environment.NewLine;
+                foreach (MenuItem item in order.MenuItems)
+                {
+                    result += item.Id + "       Name:" + item.Name + "     Price:" + item.Price + "$       Waiting time:" + item.WaitingTime + Environment.NewLine;
+                }
+                result += "Order status is " + order.Status + Environment.NewLine;
+            }
+            return result;
+        }
+        public void changeOrderStatus()
+        {
+            Database.Orders.ElementAt(SelectedID-1).Status = NewStatus;
+        }
+        public override void getNotify()
+        {
+            
+        }
+        public override string renderUI()
+        {
+          if (State == "select")
+            {
+                OutputString = "You have chosen the Change Status Function"
+                + Environment.NewLine + "Please enter the order Id: "
+                + Environment.NewLine + "Or enter -1 to exit this function"
+            + Environment.NewLine;
+            }
+            return OutputString;
+        }
     }
 }

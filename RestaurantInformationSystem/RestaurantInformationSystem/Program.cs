@@ -16,7 +16,8 @@ namespace RestaurantInformationSystem
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new Form2());
+            Restaurant mainRestaurant = new Restaurant();
+            Application.Run(new Form2(mainRestaurant));
         }
     }
 }

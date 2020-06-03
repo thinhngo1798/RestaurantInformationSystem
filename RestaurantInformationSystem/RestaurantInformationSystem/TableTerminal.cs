@@ -13,7 +13,7 @@ namespace RestaurantInformationSystem
 
         public int TableNumber { get => _tableNumber; set => _tableNumber = value; }
 
-        public TableTerminal(int tableNumber,bool dineIn)
+        public TableTerminal(int tableNumber, Database database) : base(database)
         {
             TableNumber = tableNumber;
             DineInFlag = true;

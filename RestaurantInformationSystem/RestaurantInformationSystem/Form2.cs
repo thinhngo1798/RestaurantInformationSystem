@@ -12,18 +12,31 @@ namespace RestaurantInformationSystem
 {
     public partial class Form2 : Form
     {
-        public Form2()
+        private Restaurant _restaurant;
+        public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
+
+        public Form2( Restaurant restaurant)
         {
             InitializeComponent();
+            Restaurant = restaurant;
         }
+
 
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Form1 f1 = new Form1();
+            Form1 f1 = new Form1(Restaurant);
             f1.ShowDialog();
             this.Close();
 
+        }
+
+        private void button3_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Form3 f3 = new Form3(Restaurant);
+            f3.ShowDialog();
+            this.Close();
         }
     }
 }
