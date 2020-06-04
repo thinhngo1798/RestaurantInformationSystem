@@ -14,11 +14,12 @@ namespace RestaurantInformationSystem
     {
         private Restaurant _restaurant;
         private static Timer _timer;
+        
         private int _currentOrderId;
         public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
         public static Timer Timer { get => _timer; set => _timer = value; }
         public int CurrentOrderId { get => _currentOrderId; set => _currentOrderId = value; }
-
+       
         public Form1(Restaurant restaurant)
         {
             InitializeComponent();
@@ -31,10 +32,7 @@ namespace RestaurantInformationSystem
             output.Text = Restaurant.TableTerminal.renderUI();
         }
 
-        private void label1_Click(object sender, EventArgs e)
-        {
 
-        }
 
         private void textBox1_TextChanged(object sender, EventArgs e)
         {
@@ -64,8 +62,8 @@ namespace RestaurantInformationSystem
 
             Restaurant.Gui.Form4.Show();
             Restaurant.Gui.Form3.Show();
-            Restaurant.Gui.Form4.LabelTex = Restaurant.KitchenTerminal.Notification;
-            Restaurant.Gui.Form3.LabelTex = Restaurant.CashierTerminal.Notification;
+            Restaurant.Gui.Form4.LabelTex = Restaurant.KitchenTerminal.OrderNotification;
+            Restaurant.Gui.Form3.LabelTex = Restaurant.CashierTerminal.OrderNotification;
 
             // Notifying the order that has been waiting longer than expect.
             foreach (Order order in Restaurant.Database.Orders)
@@ -77,6 +75,12 @@ namespace RestaurantInformationSystem
                 Timer.Enabled = true;
             }
 
+
+
+        }
+        private void label1_Click(object sender, EventArgs e)
+        {
+            
         }
         private void label3_Click(object sender, EventArgs e)
         {

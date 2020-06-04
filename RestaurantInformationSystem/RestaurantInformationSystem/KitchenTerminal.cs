@@ -22,14 +22,10 @@ namespace RestaurantInformationSystem
         {
             if ((subject as Order).Status == "PENDING")
             {
-                Notification += "The list of order is: " + Environment.NewLine;
-                Notification += (subject as Order).displayOrder();
+                OrderNotification += "The list of order is: " + Environment.NewLine;
+                OrderNotification += (subject as Order).displayOrder();
             }
-            if ((subject as Order).Status != "PENDING")
-            {
-                Notification += "The list of orders which have status changes are: " + Environment.NewLine;
-                Notification += (subject as Order).displayOrder();
-            }
+           
         }
     }
 }

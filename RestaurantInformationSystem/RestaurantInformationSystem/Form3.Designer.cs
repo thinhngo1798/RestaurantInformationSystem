@@ -146,6 +146,7 @@
             this.label3.Size = new System.Drawing.Size(60, 13);
             this.label3.TabIndex = 31;
             this.label3.Text = "Notification";
+            this.label3.Click += new System.EventHandler(this.label3_Click);
             // 
             // textBox2
             // 

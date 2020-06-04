@@ -13,13 +13,17 @@ namespace RestaurantInformationSystem
         private int _selectedID;
         private string _newStatus;
         private string _outputString;
-        private string _notification;
+        private string _reservationNotification;
+        private string _orderNotification;
+        private string _changeOrderNotification;
         public Database Database { get => _database; set => _database = value; }
         public string StateForStatus { get => _stateForStatus; set => _stateForStatus = value; }
         public int SelectedID { get => _selectedID; set => _selectedID = value; }
         public string NewStatus { get => _newStatus; set => _newStatus = value; }
         public string OutputString { get => _outputString; set => _outputString = value; }
-        public string Notification { get => _notification; set => _notification = value; }
+        public string OrderNotification { get => _orderNotification; set => _orderNotification = value; }
+        public string ReservationNotification { get => _reservationNotification; set => _reservationNotification = value; }
+        public string ChangeOrderNotification { get => _changeOrderNotification; set => _changeOrderNotification = value; }
 
         public enum StateName { receive, select, type, done };
 
@@ -67,7 +71,7 @@ namespace RestaurantInformationSystem
         }
         public void changeOrderStatus()
         {
-            Database.Orders.ElementAt(SelectedID-1).Status = NewStatus;
+            Database.Orders.ElementAt(SelectedID-1).changeStatus( NewStatus);
         }
         public override void getNotify()
         {

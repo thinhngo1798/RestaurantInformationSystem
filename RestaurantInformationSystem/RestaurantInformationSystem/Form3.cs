@@ -12,17 +12,24 @@ namespace RestaurantInformationSystem
 {
     public partial class Form3 : Form
     {
+        private static Timer _timer1;
         private Restaurant _restaurant;
+        private string _oldMessage;
         public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
+        public static Timer Timer1 { get => _timer1; set => _timer1 = value; }
         public string LabelTex
         {
             get { return textBox2.Text; }
             set { textBox2.Text = value; }
         }
+
+        public string OldMessage { get => _oldMessage; set => _oldMessage = value; }
+
         public Form3(Restaurant restaurant)
         {
             InitializeComponent();
             Restaurant = restaurant;
+            OldMessage = "";
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -35,8 +42,15 @@ namespace RestaurantInformationSystem
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Restaurant.Database.CurrentFunction = "OrderFunction";
             Restaurant.CashierTerminal.OutputString = "";
             output.Text = Restaurant.CashierTerminal.renderUI();
+            //Start notifying if there is changes
+            Timer1 = new System.Windows.Forms.Timer();
+            Timer1.Interval = 5000;
+            Timer1.Tick += label3_Click;
+            Timer1.Enabled = true;
+
         }
 
         private void enter_Click(object sender, EventArgs e)
@@ -93,5 +107,14 @@ namespace RestaurantInformationSystem
         {
 
         }
+
+        private void label3_Click(object sender, EventArgs e)
+        {
+            if (OldMessage != Restaurant.CashierTerminal.ChangeOrderNotification)
+            {
+                Restaurant.Gui.Form3.LabelTex = Restaurant.CashierTerminal.ChangeOrderNotification;
+                OldMessage = Restaurant.CashierTerminal.ChangeOrderNotification;
+            }
+            }
     }
 }

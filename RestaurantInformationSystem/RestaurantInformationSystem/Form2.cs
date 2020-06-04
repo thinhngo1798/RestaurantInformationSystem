@@ -26,7 +26,7 @@ namespace RestaurantInformationSystem
         {
             //this.Hide();
             Form1 f1 = Restaurant.Gui.Form1;
-            f1.ShowDialog();
+            f1.Show();
             //this.Close();
 
         }
@@ -35,7 +35,7 @@ namespace RestaurantInformationSystem
         {
             //this.Hide();
             Form3 f3 = Restaurant.Gui.Form3;
-            f3.ShowDialog();
+            f3.Show();
             //this.Close();
         }
 
