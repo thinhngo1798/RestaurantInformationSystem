@@ -6,20 +6,20 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    public class CashierTerminal : StaffInterface, IReserver
+    public class CashierTerminal : StaffInterface, IReserver, IObserver
     {
         public const int MAX_RESERVATION_AT_A_TIME = 2;
 
-        private int cashierId;
+        private string _cashierCode;
         private string _stateForReservation;
 
 
-        public int CashierId { get => cashierId; set => cashierId = value; }
         public string StateForReservation { get => _stateForReservation; set => _stateForReservation = value; }
+        public string CashierCode { get => _cashierCode; set => _cashierCode = value; }
 
-        public CashierTerminal(int id, Database database) : base(database)
+        public CashierTerminal(string cashierCode, Database database) : base(database)
         {
-            CashierId = id;
+            CashierCode = cashierCode;
             StateForReservation = "stage1";
         }
         public string retreiveReservation()
@@ -127,6 +127,15 @@ namespace RestaurantInformationSystem
                 result = false;
             }
             return result;
+        }
+
+        public void Update(ISubject subject)
+        {
+            if ((subject as Order).Status == "PENDING")
+            {
+                Notification += "The list of order is: " + Environment.NewLine;
+                Notification += (subject as Order).displayOrder();
+            }
         }
 
     }

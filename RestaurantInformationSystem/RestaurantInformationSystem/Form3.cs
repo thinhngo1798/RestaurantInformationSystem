@@ -14,7 +14,11 @@ namespace RestaurantInformationSystem
     {
         private Restaurant _restaurant;
         public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
-
+        public string LabelTex
+        {
+            get { return textBox2.Text; }
+            set { textBox2.Text = value; }
+        }
         public Form3(Restaurant restaurant)
         {
             InitializeComponent();
@@ -24,8 +28,8 @@ namespace RestaurantInformationSystem
         private void button1_Click(object sender, EventArgs e)
         {
             this.Hide();
-            Form2 f2 = new Form2(Restaurant);
-            f2.ShowDialog();
+            Form2 f2 = Restaurant.Gui.Form2;
+            f2.Show();
             this.Close();
         }
 
@@ -78,6 +82,16 @@ namespace RestaurantInformationSystem
             Restaurant.CashierTerminal.OutputString = "";
             Restaurant.CashierTerminal.renderReservationUI();
             output.Text = Restaurant.CashierTerminal.OutputString;
+        }
+
+        private void Form3_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox2_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

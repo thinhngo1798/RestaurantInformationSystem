@@ -13,11 +13,13 @@ namespace RestaurantInformationSystem
         private int _selectedID;
         private string _newStatus;
         private string _outputString;
+        private string _notification;
         public Database Database { get => _database; set => _database = value; }
         public string StateForStatus { get => _stateForStatus; set => _stateForStatus = value; }
         public int SelectedID { get => _selectedID; set => _selectedID = value; }
         public string NewStatus { get => _newStatus; set => _newStatus = value; }
         public string OutputString { get => _outputString; set => _outputString = value; }
+        public string Notification { get => _notification; set => _notification = value; }
 
         public enum StateName { receive, select, type, done };
 
@@ -59,12 +61,7 @@ namespace RestaurantInformationSystem
             string result ="";
             foreach (Order order in Database.Orders)
             {
-                result += "Order number " + order.Id + " is:" + Environment.NewLine;
-                foreach (MenuItem item in order.MenuItems)
-                {
-                    result += item.Id + "       Name:" + item.Name + "     Price:" + item.Price + "$       Waiting time:" + item.WaitingTime + Environment.NewLine;
-                }
-                result += "Order status is " + order.Status + Environment.NewLine;
+                result += order.displayOrder();
             }
             return result;
         }

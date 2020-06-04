@@ -10,16 +10,36 @@ namespace RestaurantInformationSystem
     {
         private Database _database;
         private bool _dineInFlag = true;
+        private string _deviceCode ="";
         public bool DineInFlag { get => _dineInFlag; set => _dineInFlag = value; }
         public Database Database { get => _database; set => _database = value; }
+        public string DeviceCode { get => _deviceCode; set => _deviceCode = value; }
 
         public OrderingInterface(Database database)
         {
             Database = database;
         }
+        public void getInput(string input, Restaurant restaurant)
+        {
+            if ((input == "cancel") && (Database.Orders.Count() != 0))
+            {
+                Database.Orders.RemoveAt(Database.Orders.Count() - 1);
+            }
+            else
+            {
+                createOrder(input, DineInFlag,restaurant);
+            }
+        }
         public override void getInput(string input)
         {
-             createOrder(input, DineInFlag);
+            if ((input == "cancel") && (Database.Orders.Count() != 0))
+            {
+                Database.Orders.RemoveAt(Database.Orders.Count() - 1);
+            }
+            else
+            {
+                createOrder(input, DineInFlag);
+            }
         }
         public override string renderUI()
         
@@ -42,7 +62,9 @@ namespace RestaurantInformationSystem
                 orderResult += "Status:" + Database.Orders[currentOrderId - 1].Status + Environment.NewLine;
                 orderResult += "Transaction Status:" + Database.Orders[currentOrderId - 1].Transaction.Status + Environment.NewLine;
             }
-            orderResult += "Order has been accepted"; 
+            orderResult += "Order has been recorded. Please press Comfirm to submit your order."
+            +Environment.NewLine + "Or type cancel to cancel the order.";
+            
             return orderResult;
             
         }
@@ -76,7 +98,7 @@ namespace RestaurantInformationSystem
         /// gererating new orders and adding them in Orderslist.
         /// </summary>
         /// <param name="input"></param>
-        public void createOrder(string input, bool dineInFlag )
+        public virtual void createOrder(string input, bool dineInFlag , Restaurant restaurant = null)
         {
             List<MenuItem> orderItems = new List<MenuItem>();
             for (int i = 0; i < input.Length; i++)
@@ -89,7 +111,7 @@ namespace RestaurantInformationSystem
                 }
             }
             int orderId = Database.Orders.Count();
-            Order newOrder = new Order(orderId+1,dineInFlag, orderItems);
+            Order newOrder = new Order(DeviceCode,orderId+1,dineInFlag, orderItems);
             Database.Orders.Add(newOrder);
         }
     }

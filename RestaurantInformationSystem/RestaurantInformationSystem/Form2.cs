@@ -24,19 +24,27 @@ namespace RestaurantInformationSystem
 
         private void button1_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            Form1 f1 = new Form1(Restaurant);
+            //this.Hide();
+            Form1 f1 = Restaurant.Gui.Form1;
             f1.ShowDialog();
-            this.Close();
+            //this.Close();
 
         }
 
         private void button3_Click(object sender, EventArgs e)
         {
-            this.Hide();
-            Form3 f3 = new Form3(Restaurant);
+            //this.Hide();
+            Form3 f3 = Restaurant.Gui.Form3;
             f3.ShowDialog();
-            this.Close();
+            //this.Close();
+        }
+
+        private void button4_Click(object sender, EventArgs e)
+        {
+            //this.Hide();
+            Form4 f4 = Restaurant.Gui.Form4;
+            f4.Show();
+            //this.Close();
         }
     }
 }
