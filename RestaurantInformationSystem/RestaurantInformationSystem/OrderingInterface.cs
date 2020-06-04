@@ -73,17 +73,7 @@ namespace RestaurantInformationSystem
         {
 
         }
-        public int calculateWaitingTime(MenuItem menuItem)
-        {
-            int time = 0;
-            foreach (MenuItem item in Database.Menu.MenuList)
-            {
-                if (item == menuItem)
-                    time += item.WaitingTime;
 
-            }
-            return time;
-        }
         public string menuDisplay()
         {
             string menuInformation = "";

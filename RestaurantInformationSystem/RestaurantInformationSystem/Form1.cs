@@ -13,7 +13,11 @@ namespace RestaurantInformationSystem
     public partial class Form1 : Form
     {
         private Restaurant _restaurant;
+        private static Timer _timer;
+        private int _currentOrderId;
         public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
+        public static Timer Timer { get => _timer; set => _timer = value; }
+        public int CurrentOrderId { get => _currentOrderId; set => _currentOrderId = value; }
 
         public Form1(Restaurant restaurant)
         {
@@ -62,11 +66,22 @@ namespace RestaurantInformationSystem
             Restaurant.Gui.Form3.Show();
             Restaurant.Gui.Form4.LabelTex = Restaurant.KitchenTerminal.Notification;
             Restaurant.Gui.Form3.LabelTex = Restaurant.CashierTerminal.Notification;
-        }
 
+            // Notifying the order that has been waiting longer than expect.
+            foreach (Order order in Restaurant.Database.Orders)
+            {
+                Timer = new System.Windows.Forms.Timer();
+                Timer.Interval = (order.OrderWaitingTime) * 60 * 1000 / 10;
+                CurrentOrderId = order.Id;
+                Timer.Tick += label3_Click;
+                Timer.Enabled = true;
+            }
+
+        }
         private void label3_Click(object sender, EventArgs e)
         {
-
+            Restaurant.Gui.Form3.LabelTex = "Order Id: " + CurrentOrderId + " has been waiting longer than expected.";
         }
+
     }
 }

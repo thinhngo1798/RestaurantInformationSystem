@@ -16,6 +16,7 @@ namespace RestaurantInformationSystem
         private string _status;
         private bool _dineInFlag;
         private Transaction _transaction;
+        private int _orderWaitingTime;
 
         public int Id { get => _id; set => _id = value; }
         public List<MenuItem> MenuItems { get => _menuItem; set => _menuItem = value; }
@@ -25,6 +26,7 @@ namespace RestaurantInformationSystem
         public int State { get => _state; set => _state = value; }
         public List<IObserver> Observers { get => _observers; set => _observers = value; }
         public string DeviceCode { get => _deviceCode; set => _deviceCode = value; }
+        public int OrderWaitingTime { get => _orderWaitingTime; set => _orderWaitingTime = value; }
 
         public Order(string devideCode,int id, bool dineInFlag, List<MenuItem> orderItems)
         {
@@ -34,6 +36,7 @@ namespace RestaurantInformationSystem
             MenuItems = orderItems;
             DineInFlag = dineInFlag;
             Status = "PENDING";
+            OrderWaitingTime = calculateWaitingTime();
             Transaction = new Transaction(orderItems);
         }
         public void changeStatus(string status)
@@ -56,6 +59,15 @@ namespace RestaurantInformationSystem
             }
             result += "Order status is " + Status + Environment.NewLine;
             return result;
+        }
+        public int calculateWaitingTime()
+        {
+            int time = 0;
+            foreach (MenuItem item in MenuItems)
+            {
+                    time += item.WaitingTime;
+            }
+            return time;
         }
         public void Attach(IObserver observer)
         {
