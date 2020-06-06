@@ -11,11 +11,14 @@ namespace RestaurantInformationSystem
         private string _webTerminalCode;
         private string _stateForReservation;
         private bool _successFlag;
+        private bool _noErrorFlag = true;
         //private string _outputString;
 
         public string WebTerminalCode { get => _webTerminalCode; set => _webTerminalCode = value; }
         public string StateForReservation { get => _stateForReservation; set => _stateForReservation = value; }
         public bool SuccessFlag { get => _successFlag; set => _successFlag = value; }
+        public bool noErrorFlag { get => _noErrorFlag; set => _noErrorFlag = value; }
+
         //public string OutputString { get => _outputString; set => _outputString = value; }
 
         public WebTerminal(string webTerminalCode, Database database) : base(database)
@@ -47,7 +50,7 @@ namespace RestaurantInformationSystem
             int orderId = Database.Orders.Count();
             Order newOrder = new Order(WebTerminalCode,orderId + 1, dineInFlag, orderItems);
             newOrder.Attach(restaurant.KitchenTerminal);
-            //newOrder.Attach(restaurant.CashierTerminal);
+            newOrder.Attach(restaurant.CashierTerminal);
             newOrder.Notify();
             Database.Orders.Add(newOrder);
         }
@@ -81,15 +84,64 @@ namespace RestaurantInformationSystem
 
         public void getReservationInput(string input)
         {
+            noErrorFlag = true;
+            OutputString = "";
             DateTime time = new DateTime();
             int numberOfPeople = 0;
             string customerName = "";
             string phoneNumber = "";
             string email = "";
+            int testPhoneNumber = 0;
             if (StateForReservation == "stage1")
             {
+
                 string[] words = input.Split(',');
-                if (words.Length >= 5)
+                words[0] = words[0].Trim();
+                if (words.Length != 5)
+                {
+                    OutputString += " Your input is insufficient, please try again." + Environment.NewLine;
+                    noErrorFlag = false;
+                }
+                else
+                {
+                    // Validation each input
+                    if (words[0] == "")
+                    {
+                        OutputString += "Your time cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    else if (!DateTime.TryParse(words[0], out time))
+                    {
+                        OutputString += " Your time input is invalid. Please try again." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    if (words[1] == "")
+                    {
+                        OutputString += "Your number of people cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    else if (!int.TryParse(words[1], out numberOfPeople))
+                    {
+                        OutputString += " Your number of people input is invalid. Please try again." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    if (words[2] == "")
+                    {
+                        OutputString += "Your name cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    if (words[3] == "")
+                    {
+                        OutputString += "Your phone number cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    else if (!int.TryParse(words[3], out testPhoneNumber))
+                    {
+                        OutputString += " Your phone number input is invalid. Please try again." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                }
+                if (noErrorFlag)
                 {
                     time = DateTime.ParseExact(words[0], "dd-MM-yyyy HH:mm tt", null);
                     numberOfPeople = int.Parse(words[1]);
@@ -97,10 +149,6 @@ namespace RestaurantInformationSystem
                     phoneNumber = words[3];
                     email = words[4];
                     StateForReservation = "stage2";
-                }
-                else
-                {
-                    OutputString = "Your input is invalid";
                 }
             }
             if (StateForReservation == "stage2")
@@ -113,20 +161,16 @@ namespace RestaurantInformationSystem
         {
             if (StateForReservation == "stage1")
             {
-                // restart the flag.
-                SuccessFlag = true;
-                OutputString = "Please enter your detail information for the reservation"
-                    + Environment.NewLine + " in the following form format: "
-                    + Environment.NewLine + " time,number of people, customer's name, phone number, email"
-                    + Environment.NewLine + " Example: 03-06-2020 22:10 PM,3,Steven,041085610,thinhngo.1798@gmail.com";
+                OutputString += "Please enter your detail information for the reservation"
+                            + Environment.NewLine + " in the following form format: "
+                            + Environment.NewLine + " time,number of people, customer's name, phone number, email"
+                            + Environment.NewLine + " Example: 03-06-2020 22:10 PM,3,Steven,041085610,thinhngo.1798@gmail.com" + Environment.NewLine;
             }
             if (StateForReservation == "stage2")
             {
                 StateForReservation = "stage1";
-                if (SuccessFlag)
-                {
-                    OutputString = "Your reservation has been successfully proceeded.";
-                }
+                if (noErrorFlag)
+                    OutputString = "Your reservation has been successfully proceeded." + Environment.NewLine;
             }
         }
         /// <summary>

@@ -42,6 +42,7 @@ namespace RestaurantInformationSystem
 
         private void button2_Click(object sender, EventArgs e)
         {
+            Restaurant.Database.CurrentFunction = "OrderFunction";
             output.Text = Restaurant.WebTerminal.menuDisplay();
         }
 

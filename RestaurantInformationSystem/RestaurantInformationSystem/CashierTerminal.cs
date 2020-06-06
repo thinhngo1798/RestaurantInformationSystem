@@ -66,6 +66,7 @@ namespace RestaurantInformationSystem
             {
                 
                 string[] words = input.Split(',');
+                words[0] = words[0].Trim();
                 if (words.Length != 5)
                 {
                     OutputString += " Your input is insufficient, please try again." + Environment.NewLine;
