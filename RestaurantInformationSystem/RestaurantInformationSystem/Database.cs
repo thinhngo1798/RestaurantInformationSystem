@@ -42,7 +42,6 @@ namespace RestaurantInformationSystem
 
             connection = new MySqlConnection(connectionString);
         }
-
         public Database()
         {
             Menu = new Menu();
@@ -52,6 +51,95 @@ namespace RestaurantInformationSystem
             Login();
             createDatabaseTableIfNeccessary();
             gettingOrderFromDataBase();
+            gettingReservation();
+        }
+        public void AddingOrder(Order order)
+        {
+            Orders.Add(order);
+            saveOrder(order);
+            foreach (MenuItem item in order.MenuItems)
+            {
+                saveItem(order.Id, item);
+            }
+        }
+        //public void RemoveOrder(Order order)
+        //{
+        //    Orders.Remove(order);
+        //    removeOrder(order);
+        //}
+        public void AddingReservation(Reservation reservation)
+        {
+            Reservations.Add(reservation);
+            saveReservation(reservation);
+        }
+        //public void RemoveReservation(Reservation reservation)
+        //{
+        //    Reservations.Remove(reservation);
+        //    RemoveReservation();
+        //}
+
+        public void saveOrder(Order order)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to MySQL to save Order");
+                connection.Open();
+                string type = "";
+                if (order.DineInFlag == true)
+                {
+                    type = "dine in";
+                }
+                string sqlTemplate = "INSERT INTO orderRecords (numberOfItem,type,status,transactionStatus,waitingTime,time) VALUES ({0},'{1}','{2}','{3}',{4},'{5}');";
+                string sql = string.Format(sqlTemplate, order.MenuItems.Count(), type, order.Status, order.Transaction.Status, order.OrderWaitingTime, order.OrderTime);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                rdr.Close();
+                connection.Close();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        public void saveItem(int orderId, MenuItem item)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to MySQL to save menu item");
+                connection.Open();
+                string sqlTemplate = "INSERT INTO orderItems (orderId,id,name,price,waitingTime) VALUES ({0},{1},'{2}',{3},'{4}');";
+                string sql = string.Format(sqlTemplate, orderId, item.Id , item.Name, item.Price, item.WaitingTime);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                rdr.Close();
+                connection.Close();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        public void saveReservation(Reservation reservation)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to MySQL to save Order");
+                connection.Open();
+
+                string sqlTemplate = "INSERT INTO reservations (time,numberOfPeople,name,phone,email) VALUES ('{0}','{1}','{2}','{3}','{4}');";
+                string sql = string.Format(sqlTemplate,reservation.Time.ToString("dd-MM-yyyy HH:mm tt"), reservation.NumberOfPeople, reservation.CustomerName, Convert.ToInt32(reservation.PhoneNumber), reservation.Email);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                rdr.Close();
+                connection.Close();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
         }
         public void createDatabaseTableIfNeccessary()
         {
@@ -76,6 +164,7 @@ namespace RestaurantInformationSystem
             connection.Close();
             Console.WriteLine("Done.");
         }
+
         public void gettingOrderFromDataBase()
         {
             try
@@ -95,11 +184,7 @@ namespace RestaurantInformationSystem
                 int[] _orderWaitingTime = new int[5];
                 string[] _dateTimes = new string[5];
                 // Information for an menu item.
-                int[] orderId = new int[5];
                 int[] id = new int[5];
-                string[] name = new string[5];
-                double[] price = new double[5];
-                int[] waitingTime = new int[5];
                 int counter = 0;
                 while (rdr.Read())
                 {
@@ -112,20 +197,19 @@ namespace RestaurantInformationSystem
                     _dateTimes[counter] = Convert.ToString(rdr[6]);
                     if (rdr[7] != null)
                     {
-                        orderId[counter] = Convert.ToInt32(rdr[7]);
                         id[counter] = Convert.ToInt32(rdr[8]);
-                        name[counter] = Convert.ToString(rdr[9]);
-                        price[counter] = Convert.ToInt32(rdr[10]);
-                        waitingTime[counter] = Convert.ToInt32(rdr[11]);
                     }
                     counter++;
                 }
                 rdr.Close();
-                for (int l = 1; l <= counter; l++)
+                connection.Close();
+                Console.WriteLine("Done.");
+                for (int l = 0; l < counter; l++)
                 {
-                    createorder(_id[l], _numberOfItem[l], _status[l], _dineInFlag[l], _transactionStatus[l], _orderWaitingTime[l], _dateTimes[l], orderId[l], id[l], name[l], price[l], waitingTime[l]);
+                    createorder(_id[l], _numberOfItem[l], _status[l], _dineInFlag[l], _transactionStatus[l], _orderWaitingTime[l], _dateTimes[l],id[l]);
                 }
-                }
+
+            }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
@@ -154,25 +238,28 @@ namespace RestaurantInformationSystem
                     _id[counter] = Convert.ToInt32(rdr[0]);
                     _dateTimes[counter] = Convert.ToString(rdr[1]);
                     _numberOfPeople[counter] = Convert.ToInt32(rdr[2]);
-                    name[counter] = Convert.ToString(rdr[4]);
-                    phoneNumber[counter] = Convert.ToInt32(rdr[5]);
-                    email[counter] = Convert.ToString(rdr[6]);
+                    name[counter] = Convert.ToString(rdr[3]);
+                    phoneNumber[counter] = Convert.ToInt32(rdr[4]);
+                    email[counter] = Convert.ToString(rdr[5]);
                     counter++;
                 }
                 rdr.Close();
 
-                for (int l = 1; l <= counter; l++)
+                for (int l = 0; l < counter; l++)
                 {
                     DateTime time = DateTime.ParseExact(_dateTimes[l], "dd-MM-yyyy HH:mm tt", null);
                     createReservation(time, _numberOfPeople[l], name[l], phoneNumber[l].ToString(), email[l]);
                 }
+                connection.Close();
+                Console.WriteLine("Done.");
             }
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
             }
         }
-        public void createorder(int _id, int _numberOfItem, string _status, bool _dineInFlag, string transactionStatus, int _orderWaitingTime, string _dateTimes, int orderId, int id, string name, double price, int waitingTime)
+
+        public void createorder(int _id, int _numberOfItem, string _status, bool _dineInFlag, string transactionStatus, int _orderWaitingTime, string _dateTimes, int id)
         {
             List<MenuItem> orderItems = new List<MenuItem>();
             for (int i = 0; i < _numberOfItem; i++)
@@ -180,16 +267,21 @@ namespace RestaurantInformationSystem
                 foreach (MenuItem item in Menu.MenuList)
                 {
                     if (id == item.Id)
+                    {
                         orderItems.Add(item);
+                    }
                 }
             }
             Order neworder = new Order(null,_id, _dineInFlag, orderItems);
             Orders.Add(neworder);
         }
+
+
         public void createReservation(DateTime time, int people, string name, string phoneNumber, string email)
         {
             int id = Reservations.Count() + 1;
             Reservation newReservation = new Reservation(id, time, people, name, phoneNumber, email);
+            Reservations.Add(newReservation);
         }
 
     }

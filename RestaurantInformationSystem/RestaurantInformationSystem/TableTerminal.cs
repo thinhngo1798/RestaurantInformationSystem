@@ -35,7 +35,7 @@ namespace RestaurantInformationSystem
             newOrder.Attach(restaurant.KitchenTerminal);
             newOrder.Attach(restaurant.CashierTerminal);
             newOrder.Notify();
-            Database.Orders.Add(newOrder);
+            Database.AddingOrder(newOrder);
         }
     }
 }

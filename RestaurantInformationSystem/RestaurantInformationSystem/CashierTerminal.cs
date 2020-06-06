@@ -159,7 +159,7 @@ namespace RestaurantInformationSystem
             Reservation newReservation = new Reservation(id, time, people, name, phoneNumber,email);
             if (checkClashing(time))
             {
-            Database.Reservations.Add(newReservation);
+            Database.AddingReservation(newReservation);
             }
             else
             {

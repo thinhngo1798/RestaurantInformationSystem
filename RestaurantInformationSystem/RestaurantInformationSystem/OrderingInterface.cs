@@ -116,7 +116,7 @@ namespace RestaurantInformationSystem
             }
             int orderId = Database.Orders.Count();
             Order newOrder = new Order(DeviceCode,orderId+1,dineInFlag, orderItems);
-            Database.Orders.Add(newOrder);
+            Database.AddingOrder(newOrder);
         }
     }
 }
