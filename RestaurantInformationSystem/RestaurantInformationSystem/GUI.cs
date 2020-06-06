@@ -12,6 +12,7 @@ namespace RestaurantInformationSystem
         private Form2 _form2;
         private Form3 _form3;
         private Form4 _form4;
+        private Form5 _form5;
         private Restaurant _restaurant;
 
         public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
@@ -19,6 +20,7 @@ namespace RestaurantInformationSystem
         public Form2 Form2 { get => _form2; set => _form2 = value; }
         public Form3 Form3 { get => _form3; set => _form3 = value; }
         public Form4 Form4 { get => _form4; set => _form4 = value; }
+        public Form5 Form5 { get => _form5; set => _form5 = value; }
 
         public GUI (Restaurant restaurant)
             {
@@ -27,6 +29,7 @@ namespace RestaurantInformationSystem
             Form2 = new Form2(restaurant);
             Form3 = new Form3(restaurant);
             Form4 = new Form4(restaurant);
+            Form5 = new Form5(restaurant);
         }
     }
 }

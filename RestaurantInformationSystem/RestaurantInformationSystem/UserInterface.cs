@@ -16,7 +16,7 @@ namespace RestaurantInformationSystem
         {
             Input = new List<string>();
         }
-        public abstract void getInput(string input);
+        public abstract void getInput(string input, Restaurant restaurant);
         public abstract string renderUI();
         public abstract void getNotify();
     }

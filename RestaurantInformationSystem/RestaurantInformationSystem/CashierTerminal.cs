@@ -12,15 +12,19 @@ namespace RestaurantInformationSystem
 
         private string _cashierCode;
         private string _stateForReservation;
-
+        private bool _successFlag;
+        private bool _noErrorFlag = true;
 
         public string StateForReservation { get => _stateForReservation; set => _stateForReservation = value; }
         public string CashierCode { get => _cashierCode; set => _cashierCode = value; }
+        public bool SuccessFlag { get => _successFlag; set => _successFlag = value; }
+        public bool noErrorFlag { get => _noErrorFlag; set => _noErrorFlag = value; }
 
         public CashierTerminal(string cashierCode, Database database) : base(database)
         {
             CashierCode = cashierCode;
             StateForReservation = "stage1";
+            SuccessFlag = true;
         }
         public string retreiveReservation()
         {
@@ -50,33 +54,75 @@ namespace RestaurantInformationSystem
 
         public void getReservationInput(string input)
         {
-            int id = 0;
+            noErrorFlag = true;
+            OutputString = "";
             DateTime time = new DateTime();
             int numberOfPeople = 0;
-            string customerName ="";
-            string phoneNumber ="";
-            string email="";
+            string customerName = "";
+            string phoneNumber = "";
+            string email = "";
+            int testPhoneNumber = 0;
             if (StateForReservation == "stage1")
             {
-            string[] words = input.Split(',');
-                if (words.Length >= 5)
+                
+                string[] words = input.Split(',');
+                if (words.Length != 5)
                 {
-                    id = int.Parse(words[0]);
-                    time = DateTime.ParseExact(words[1], "dd-MM-yyyy HH:mm tt", null);
-                    numberOfPeople = int.Parse(words[2]);
-                    customerName = words[3];
-                    phoneNumber = words[4];
-                    email = words[5];
-                    StateForReservation = "stage2";
+                    OutputString += " Your input is insufficient, please try again." + Environment.NewLine;
+                    noErrorFlag = false;
                 }
                 else
                 {
-                    OutputString = "Your input is invalid";
+                    // Validation each input
+                    if (words[0] == "")
+                    {
+                        OutputString += "Your time cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    else if (!DateTime.TryParse(words[0], out time))
+                    {
+                        OutputString += " Your time input is invalid. Please try again." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    if (words[1] == "")
+                    {
+                        OutputString += "Your number of people cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    else if (!int.TryParse(words[1], out numberOfPeople))
+                    {
+                        OutputString += " Your number of people input is invalid. Please try again." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    if (words[2] == "")
+                    {
+                        OutputString += "Your name cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    if (words[3] == "")
+                    {
+                        OutputString += "Your phone number cannot be empty." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                    else if (!int.TryParse(words[3], out testPhoneNumber))
+                    {
+                        OutputString += " Your phone number input is invalid. Please try again." + Environment.NewLine;
+                        noErrorFlag = false;
+                    }
+                }
+                if (noErrorFlag)
+                {
+                    time = DateTime.ParseExact(words[0], "dd-MM-yyyy HH:mm tt", null);
+                    numberOfPeople = int.Parse(words[1]);
+                    customerName = words[2];
+                    phoneNumber = words[3];
+                    email = words[4];
+                    StateForReservation = "stage2";
                 }
             }
             if (StateForReservation == "stage2")
             {
-                createReservation(id, time, numberOfPeople, customerName, phoneNumber, email);    
+                createReservation(time, numberOfPeople, customerName, phoneNumber, email);
             }
 
         }
@@ -84,15 +130,16 @@ namespace RestaurantInformationSystem
         {
             if (StateForReservation =="stage1")
             {
-                OutputString = "Please enter your detail information for the reservation"
-                    + Environment.NewLine + " in the following form format: "
-                    + Environment.NewLine + " id,time,number of people, customer's name, phone number, email"
-                    + Environment.NewLine + " Example: 1,03-06-2020 22:10 PM,3,Steven,041085610,thinhngo.1798@gmail.com";
+                OutputString += "Please enter your detail information for the reservation"
+                            + Environment.NewLine + " in the following form format: "
+                            + Environment.NewLine + " time,number of people, customer's name, phone number, email"
+                            + Environment.NewLine + " Example: 03-06-2020 22:10 PM,3,Steven,041085610,thinhngo.1798@gmail.com" + Environment.NewLine;
             }
             if (StateForReservation == "stage2")
             {
                 StateForReservation = "stage1";
-                OutputString = "Your reservation has been successfully proceeded.";
+                if (noErrorFlag)
+                OutputString = "Your reservation has been successfully proceeded." + Environment.NewLine;
             }
         }
         /// <summary>
@@ -105,12 +152,17 @@ namespace RestaurantInformationSystem
         /// <param name="name"></param>
         /// <param name="phoneNumber"></param>
         /// <param name="email"></param>
-        public void createReservation(int id, DateTime time, int people, string name, string phoneNumber, string email)
+        public void createReservation(DateTime time, int people, string name, string phoneNumber, string email)
         {
+            int id = Database.Reservations.Count() + 1;
             Reservation newReservation = new Reservation(id, time, people, name, phoneNumber,email);
             if (checkClashing(time))
             {
             Database.Reservations.Add(newReservation);
+            }
+            else
+            {
+                OutputString = "There are no more space to book on that time. Please pick a different time";
             }
         }
         public bool checkClashing(DateTime time)
@@ -125,6 +177,7 @@ namespace RestaurantInformationSystem
             if (reservationCounter >= MAX_RESERVATION_AT_A_TIME)
             {
                 result = false;
+                SuccessFlag = false;
             }
             return result;
         }

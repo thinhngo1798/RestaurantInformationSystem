@@ -46,5 +46,13 @@ namespace RestaurantInformationSystem
             f4.Show();
             //this.Close();
         }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            //this.Hide();
+            Form5 f5 = Restaurant.Gui.Form5;
+            f5.Show();
+            //this.Close();
+        }
     }
 }

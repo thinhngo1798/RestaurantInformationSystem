@@ -11,34 +11,43 @@ namespace RestaurantInformationSystem
         private Database _database;
         private bool _dineInFlag = true;
         private string _deviceCode ="";
+        private string _outputString = "";
+        private string _inputstate ;
+        private bool _cancelOrder;
         public bool DineInFlag { get => _dineInFlag; set => _dineInFlag = value; }
         public Database Database { get => _database; set => _database = value; }
         public string DeviceCode { get => _deviceCode; set => _deviceCode = value; }
+        public string OutputString { get => _outputString; set => _outputString = value; }
+        public string Inputstate { get => _inputstate; set => _inputstate = value; }
+        public bool CancelOrder { get => _cancelOrder; set => _cancelOrder = value; }
 
         public OrderingInterface(Database database)
         {
             Database = database;
         }
-        public void getInput(string input, Restaurant restaurant)
+        public override void getInput(string input, Restaurant restaurant)
         {
             if ((input == "cancel") && (Database.Orders.Count() != 0))
             {
                 Database.Orders.RemoveAt(Database.Orders.Count() - 1);
+                CancelOrder = true;
             }
             else
             {
-                createOrder(input, DineInFlag,restaurant);
-            }
-        }
-        public override void getInput(string input)
-        {
-            if ((input == "cancel") && (Database.Orders.Count() != 0))
-            {
-                Database.Orders.RemoveAt(Database.Orders.Count() - 1);
-            }
-            else
-            {
-                createOrder(input, DineInFlag);
+                bool ANumberFlag = false;
+                int i = 0;
+                ANumberFlag = int.TryParse(input, out i);
+                if (ANumberFlag)
+                {
+                    Inputstate = "valid";
+                    createOrder(input, DineInFlag, restaurant);
+                }
+                else
+                {
+                    Inputstate = "invalid";
+                    OutputString = " Your input is invalid. You must enter the id number only.";
+                    
+                }
             }
         }
         public override string renderUI()
@@ -46,9 +55,15 @@ namespace RestaurantInformationSystem
         {
             int currentOrderId = Database.Orders.Count();
             string orderResult = "";
-            if (currentOrderId ==0 )
+           
+           if ( Inputstate == "invalid")
             {
-                orderResult = "There is no order which has been proceeded";
+                return OutputString;
+            }
+            else if (CancelOrder)
+            {
+                orderResult = "The order has been cancelled.";
+                CancelOrder = false;
             }
             else
             {
@@ -61,10 +76,9 @@ namespace RestaurantInformationSystem
                 }
                 orderResult += "Status:" + Database.Orders[currentOrderId - 1].Status + Environment.NewLine;
                 orderResult += "Transaction Status:" + Database.Orders[currentOrderId - 1].Transaction.Status + Environment.NewLine;
+                orderResult += "Order has been recorded. Please press Comfirm to inform our staffs about your order."
+           + Environment.NewLine + "Or type cancel to cancel the order.";
             }
-            orderResult += "Order has been recorded. Please press Comfirm to submit your order."
-            +Environment.NewLine + "Or type cancel to cancel the order.";
-            
             return orderResult;
             
         }

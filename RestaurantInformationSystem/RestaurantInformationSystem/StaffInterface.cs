@@ -16,6 +16,7 @@ namespace RestaurantInformationSystem
         private string _reservationNotification;
         private string _orderNotification;
         private string _changeOrderNotification;
+
         public Database Database { get => _database; set => _database = value; }
         public string StateForStatus { get => _stateForStatus; set => _stateForStatus = value; }
         public int SelectedID { get => _selectedID; set => _selectedID = value; }
@@ -32,26 +33,41 @@ namespace RestaurantInformationSystem
             Database = database;
             StateForStatus = "select";
         }
-        public override void getInput(string input)
+        public override void getInput(string input, Restaurant restaurant = null)
         {
             if (input == "-1")
             {
                 OutputString = "You have been quit the current request";
-                StateForStatus = "select";
+                StateForStatus = "exit";
             }
             else
             {
                 if (StateForStatus == "select")
                 {
-                    SelectedID = int.Parse(input);
-                    StateForStatus = "done";
-                    OutputString = "Please enter the new status";
+                    if (isANumber(input))
+                    {
+                        SelectedID = int.Parse(input);
+                        StateForStatus = "done";
+                        OutputString = "Please enter the new status";
+                    }
+                    else
+                    {
+                        OutputString = "Your selected id is invalid. Please enter the id of the order again: ";
+                    }
                 }
                 else if (StateForStatus == "done")
                 {
-                    OutputString = "Your request is done";
-                    NewStatus = input;
-                    changeOrderStatus();
+                    if (isValid(input))
+                    {
+                        OutputString = "Your request is done";
+                        NewStatus = input;
+                        changeOrderStatus();
+                    }
+                    else
+                    {
+                        OutputString = "Your input status is invalid. Please enter the status of the order again: ";
+                    }
+
                 }
                 else
                 {
@@ -59,6 +75,20 @@ namespace RestaurantInformationSystem
                 }
             }
 
+        }
+        public bool isANumber(string input)
+        {
+            int i = 0;
+            return int.TryParse(input, out i);
+        }
+        public bool isValid(string inputText)
+        {
+            string input = inputText.ToUpper();
+            if ((input != "PENDING") && (input != "READY") && (input != "PAID") && (input != "CANCEL"))
+            {
+                return false;
+            }
+            return true;
         }
         public string displayOrder()
         {
@@ -79,12 +109,24 @@ namespace RestaurantInformationSystem
         }
         public override string renderUI()
         {
-          if (StateForStatus == "select")
+            if (StateForStatus == "exit")
             {
-                OutputString = "You have chosen the Change Status Function"
-                + Environment.NewLine + "Please enter the order Id: "
-                + Environment.NewLine + "Or enter -1 to exit this function"
-            + Environment.NewLine;
+                StateForStatus = "select";
+                return OutputString;
+            }
+            else if (StateForStatus == "select")
+            {
+                if (OutputString != "")
+                {
+                    return OutputString;
+                }
+                else
+                {
+                    OutputString = "You have chosen the Change Status Function"
+                    + Environment.NewLine + "Please enter the order Id: "
+                    + Environment.NewLine + "Or enter -1 to exit this function"
+                + Environment.NewLine;
+                }
             }
             return OutputString;
         }

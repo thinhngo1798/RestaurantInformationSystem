@@ -8,7 +8,7 @@ namespace RestaurantInformationSystem
 {
     public interface IReserver
     {
-        void createReservation(int id, DateTime time, int people, string name, string phoneNumber, string email);
+        void createReservation(DateTime time, int people, string name, string phoneNumber, string email);
         string retreiveReservation();
         void deleteReservation(int id);
         bool checkClashing(DateTime time);

@@ -37,7 +37,7 @@ namespace RestaurantInformationSystem
             this.Hide();
             Form2 f2 = Restaurant.Gui.Form2;
             f2.Show();
-            this.Close();
+            //this.Close();
         }
 
         private void button3_Click(object sender, EventArgs e)
