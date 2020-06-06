@@ -89,8 +89,8 @@ namespace RestaurantInformationSystem
                 {
                     type = "dine in";
                 }
-                string sqlTemplate = "INSERT INTO orderRecords (numberOfItem,type,status,transactionStatus,waitingTime,time) VALUES ({0},'{1}','{2}','{3}',{4},'{5}');";
-                string sql = string.Format(sqlTemplate, order.MenuItems.Count(), type, order.Status, order.Transaction.Status, order.OrderWaitingTime, order.OrderTime);
+                string sqlTemplate = "INSERT INTO orderRecords (id,numberOfItem,type,status,transactionStatus,waitingTime,time) VALUES ({0},{1},'{2}','{3}','{4}',{5},'{6}');";
+                string sql = string.Format(sqlTemplate,order.Id, order.MenuItems.Count(), type, order.Status, order.Transaction.Status, order.OrderWaitingTime, order.OrderTime);
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
                 MySqlDataReader rdr = cmd.ExecuteReader();
                 rdr.Close();
@@ -147,7 +147,7 @@ namespace RestaurantInformationSystem
             {
                 Console.WriteLine("Connecting to MySQL...");
                 connection.Open();
-                string sql = "CREATE TABLE IF NOT EXISTS orderRecords  (`id` int(11) NOT NULL auto_increment PRIMARY KEY,`numberOfItem` int(10) NOT NULL,`type` varchar(20) NOT NULL ,`status` varchar(20) NOT NULL,`transactionStatus` varchar(20) NOT NULL,`waitingTime` int(11) NOT NULL,`time` datetime NOT NULL)";
+                string sql = "CREATE TABLE IF NOT EXISTS orderRecords  (`id` int(11) NOT NULL,`numberOfItem` int(10) NOT NULL,`type` varchar(20) NOT NULL ,`status` varchar(20) NOT NULL,`transactionStatus` varchar(20) NOT NULL,`waitingTime` int(11) NOT NULL,`time` varchar(20) NOT NULL,`primaryId` int(11) auto_increment PRIMARY KEY)";
                 string sql1 = "CREATE TABLE IF NOT EXISTS orderItems (`primaryId` int(11) NOT NULL auto_increment PRIMARY KEY,`orderId` int(10) NOT NULL,`id` int(10) NOT NULL,`name` varchar(20) NOT NULL,`price` float NOT NULL,`waitingTime` int(11) NOT NULL)";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
                 MySqlDataReader rdr = cmd.ExecuteReader();
@@ -171,10 +171,11 @@ namespace RestaurantInformationSystem
             {
                 Console.WriteLine("Connecting to MySQL to get data");
                 connection.Open();
-                string sql = "SELECT * FROM orderRecords INNER JOIN orderItems ON orderRecords.id = orderItems.orderId ";
+                string sql = "SELECT * FROM orderRecords";
                 MySqlCommand cmd = new MySqlCommand(sql, connection);
                 MySqlDataReader rdr = cmd.ExecuteReader();
-                
+
+               
                 // Information for an order.
                 int[] _id = new int[5];
                 int[] _numberOfItem = new int[5];
@@ -195,18 +196,28 @@ namespace RestaurantInformationSystem
                     _transactionStatus[counter] = Convert.ToString(rdr[4]);
                     _orderWaitingTime[counter] = Convert.ToInt32(rdr[5]);
                     _dateTimes[counter] = Convert.ToString(rdr[6]);
-                    if (rdr[7] != null)
-                    {
-                        id[counter] = Convert.ToInt32(rdr[8]);
-                    }
                     counter++;
                 }
                 rdr.Close();
+                for (int i = 0; i < counter; i++)
+                {
+                    string template = "SELECT * FROM orderItems WHERE orderId = {0}";
+                    string sql1 = String.Format(template, _id[i]);
+                    MySqlCommand cmd1 = new MySqlCommand(sql1, connection);
+                    MySqlDataReader rdr1 = cmd1.ExecuteReader();
+                    int counter1 = 0;
+                    while (rdr1.Read())
+                    {
+                        id[counter1] = Convert.ToInt32(rdr1[1]);
+                        counter1++;
+                    }
+                    rdr1.Close();
+                }   
                 connection.Close();
                 Console.WriteLine("Done.");
                 for (int l = 0; l < counter; l++)
                 {
-                    createorder(_id[l], _numberOfItem[l], _status[l], _dineInFlag[l], _transactionStatus[l], _orderWaitingTime[l], _dateTimes[l],id[l]);
+                    createorder(_id[l], _numberOfItem[l], _status[l], _dineInFlag[l], _transactionStatus[l], _orderWaitingTime[l], _dateTimes[l],id);
                 }
 
             }
@@ -259,14 +270,14 @@ namespace RestaurantInformationSystem
             }
         }
 
-        public void createorder(int _id, int _numberOfItem, string _status, bool _dineInFlag, string transactionStatus, int _orderWaitingTime, string _dateTimes, int id)
+        public void createorder(int _id, int _numberOfItem, string _status, bool _dineInFlag, string transactionStatus, int _orderWaitingTime, string _dateTimes, int[] id)
         {
             List<MenuItem> orderItems = new List<MenuItem>();
             for (int i = 0; i < _numberOfItem; i++)
             {
                 foreach (MenuItem item in Menu.MenuList)
                 {
-                    if (id == item.Id)
+                    if (id[i] == item.Id)
                     {
                         orderItems.Add(item);
                     }

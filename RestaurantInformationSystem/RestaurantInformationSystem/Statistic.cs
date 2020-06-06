@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    class Statistic
+    public class Statistic
     {
+
     }
 }
