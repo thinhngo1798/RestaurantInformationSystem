@@ -66,6 +66,27 @@ namespace RestaurantInformationSystem
                 Restaurant.CashierTerminal.renderReservationUI();
                 output.Text = Restaurant.CashierTerminal.OutputString;
             }
+            else if (Restaurant.Database.CurrentFunction == "statisticFunction")
+            {
+                Restaurant.CashierTerminal.getInput(input.Text);
+                Restaurant.CashierTerminal.renderUI();
+                output.Text = Restaurant.CashierTerminal.OutputString;
+            }
+            else if (Restaurant.Database.CurrentFunction == "paymentFunction")
+            {
+                Restaurant.CashierTerminal.getInput(input.Text);
+                output.Text = Restaurant.CashierTerminal.renderUI();
+            }
+            else if (Restaurant.Database.CurrentFunction == "deleteAnOrderFunction")
+            {
+                Restaurant.CashierTerminal.getInput(input.Text);
+                output.Text = Restaurant.CashierTerminal.renderUI();
+            }
+            else if (Restaurant.Database.CurrentFunction == "deleteAReservationFunction")
+            {
+                Restaurant.CashierTerminal.getInput(input.Text);
+                output.Text = Restaurant.CashierTerminal.renderUI();
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
@@ -116,5 +137,33 @@ namespace RestaurantInformationSystem
                 OldMessage = Restaurant.CashierTerminal.ChangeOrderNotification;
             }
             }
+
+        private void button7_Click(object sender, EventArgs e)
+        {
+            Restaurant.Database.CurrentFunction = "statisticFunction";
+            Restaurant.CashierTerminal.OutputString = "";
+            output.Text = Restaurant.CashierTerminal.renderUI();
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            Restaurant.Database.CurrentFunction = "paymentFunction";
+            Restaurant.CashierTerminal.OutputString = "";
+            output.Text = Restaurant.CashierTerminal.renderUI();
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            Restaurant.Database.CurrentFunction = "deleteAnOrderFunction";
+            Restaurant.CashierTerminal.OutputString = "";
+            output.Text = Restaurant.CashierTerminal.renderUI();
+        }
+
+        private void button8_Click(object sender, EventArgs e)
+        {
+            Restaurant.Database.CurrentFunction = "deleteAReservationFunction";
+            Restaurant.CashierTerminal.OutputString = "";
+            output.Text = Restaurant.CashierTerminal.renderUI();
+        }
     }
 }

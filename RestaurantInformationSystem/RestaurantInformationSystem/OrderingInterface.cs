@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace RestaurantInformationSystem
 {
-    public class OrderingInterface : UserInterface
+    public class OrderingInterface 
     {
         private Database _database;
         private bool _dineInFlag = true;
@@ -25,7 +25,7 @@ namespace RestaurantInformationSystem
         {
             Database = database;
         }
-        public override void getInput(string input, Restaurant restaurant)
+        public void getInput(string input, Restaurant restaurant)
         {
             if ((input == "cancel") && (Database.Orders.Count() != 0))
             {
@@ -50,7 +50,7 @@ namespace RestaurantInformationSystem
                 }
             }
         }
-        public override string renderUI()
+        public string renderUI()
         
         {
             int currentOrderId = Database.Orders.Count();
@@ -81,11 +81,6 @@ namespace RestaurantInformationSystem
             }
             return orderResult;
             
-        }
-        
-        public override void getNotify()
-        {
-
         }
 
         public string menuDisplay()

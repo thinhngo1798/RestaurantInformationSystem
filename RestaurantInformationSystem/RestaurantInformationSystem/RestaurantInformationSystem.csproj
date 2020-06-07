@@ -78,12 +78,6 @@
     <Compile Include="Form5.Designer.cs">
       <DependentUpon>Form5.cs</DependentUpon>
     </Compile>
-    <Compile Include="Form6.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Form6.Designer.cs">
-      <DependentUpon>Form6.cs</DependentUpon>
-    </Compile>
     <Compile Include="GUI.cs" />
     <Compile Include="IObserver.cs" />
     <Compile Include="IReserver.cs" />
@@ -99,8 +93,8 @@
     <Compile Include="MenuItem.cs" />
     <Compile Include="Statistic.cs" />
     <Compile Include="StatisticObserver.cs" />
+    <Compile Include="TimePeriod.cs" />
     <Compile Include="Transaction.cs" />
-    <Compile Include="UserInterface.cs" />
     <Compile Include="Database.cs" />
     <Compile Include="StaffInterface.cs" />
     <Compile Include="CashierTerminal.cs" />

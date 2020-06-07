@@ -21,7 +21,10 @@ namespace RestaurantInformationSystem
         public Form3 Form3 { get => _form3; set => _form3 = value; }
         public Form4 Form4 { get => _form4; set => _form4 = value; }
         public Form5 Form5 { get => _form5; set => _form5 = value; }
-
+        /// <summary>
+        /// The Gui can access Restaurant to implement the User Interface.
+        /// </summary>
+        /// <param name="restaurant"></param>
         public GUI (Restaurant restaurant)
             {
             Restaurant = restaurant;

@@ -14,6 +14,7 @@ namespace RestaurantInformationSystem
         private Menu _menu;
         private List<Reservation> _reservations;
         private string _currentFunction;
+        private Statistic _statistic;
 
         // For MySQL Database
         private MySqlConnection connection;
@@ -28,7 +29,26 @@ namespace RestaurantInformationSystem
         internal Menu Menu { get => _menu; set => _menu = value; }
         public List<Reservation> Reservations { get => _reservations; set => _reservations = value; }
         public string CurrentFunction { get => _currentFunction; set => _currentFunction = value; }
-
+        public Statistic Statistic { get => _statistic; set => _statistic = value; }
+        /// <summary>
+        /// This contructor has the responsibility to initialize orders, reservation, menu and 
+        /// also saving or retrieving data to Database MariaDB MySql.
+        /// </summary>
+        public Database()
+        {
+            Menu = new Menu();
+            Orders = new List<Order>();
+            Reservations = new List<Reservation>();
+            Statistic = new Statistic(this);
+            CurrentFunction = "";
+            Login();
+            createDatabaseTableIfNeccessary();
+            gettingOrderFromDataBase();
+            gettingReservation();
+        }
+        /// <summary>
+        /// Login into MariaDb
+        /// </summary>
         public void Login()
         {
 
@@ -42,17 +62,10 @@ namespace RestaurantInformationSystem
 
             connection = new MySqlConnection(connectionString);
         }
-        public Database()
-        {
-            Menu = new Menu();
-            Orders = new List<Order>();
-            Reservations = new List<Reservation>();
-            CurrentFunction = "";
-            Login();
-            createDatabaseTableIfNeccessary();
-            gettingOrderFromDataBase();
-            gettingReservation();
-        }
+        /// <summary>
+        /// Adding orders to database (offline) and MariaDb (online).
+        /// </summary>
+        /// <param name="order"></param>
         public void AddingOrder(Order order)
         {
             Orders.Add(order);
@@ -62,22 +75,83 @@ namespace RestaurantInformationSystem
                 saveItem(order.Id, item);
             }
         }
-        //public void RemoveOrder(Order order)
-        //{
-        //    Orders.Remove(order);
-        //    removeOrder(order);
-        //}
+        /// <summary>
+        /// Removing order from both database.
+        /// </summary>
+        /// <param name="order"></param>
+        public void RemovingOrder(Order order)
+        {
+            Orders.Remove(order);
+            removeOrder(order);
+        }
+        /// <summary>
+        /// Adding reservations to both database.
+        /// </summary>
+        /// <param name="reservation"></param>
         public void AddingReservation(Reservation reservation)
         {
             Reservations.Add(reservation);
             saveReservation(reservation);
         }
-        //public void RemoveReservation(Reservation reservation)
-        //{
-        //    Reservations.Remove(reservation);
-        //    RemoveReservation();
-        //}
-
+        /// <summary>
+        /// Removing Reservation
+        /// </summary>
+        /// <param name="reservation"></param>
+        public void RemovingReservation(Reservation reservation)
+        {
+            Reservations.Remove(reservation);
+            RemoveReservation(reservation);
+        }
+        /// <summary>
+        /// Removing reservation online.
+        /// </summary>
+        /// <param name="reservation"></param>
+        public void RemoveReservation(Reservation reservation)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to MySQL to delete Reservation");
+                connection.Open();
+                string sqlTemplate = "DELETE FROM reservations WHERE id = {0};";
+                string sql = string.Format(sqlTemplate, reservation.Id);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                rdr.Close();
+                connection.Close();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        /// <summary>
+        /// Removing order online.
+        /// </summary>
+        /// <param name="order"></param>
+        public void removeOrder(Order order)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to MySQL to save Order");
+                connection.Open();
+                string sqlTemplate = "DELETE FROM orderRecords WHERE id = {0};";
+                string sql = string.Format(sqlTemplate, order.Id);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                rdr.Close();
+                connection.Close();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
+        /// <summary>
+        /// Save orders to online database.
+        /// </summary>
+        /// <param name="order"></param>
         public void saveOrder(Order order)
         {
             try
@@ -102,6 +176,11 @@ namespace RestaurantInformationSystem
                 Console.WriteLine(ex.ToString());
             }
         }
+        /// <summary>
+        /// Saving menu item to online database.
+        /// </summary>
+        /// <param name="orderId"></param>
+        /// <param name="item"></param>
         public void saveItem(int orderId, MenuItem item)
         {
             try
@@ -121,6 +200,10 @@ namespace RestaurantInformationSystem
                 Console.WriteLine(ex.ToString());
             }
         }
+        /// <summary>
+        /// Saving reservation to online database.
+        /// </summary>
+        /// <param name="reservation"></param>
         public void saveReservation(Reservation reservation)
         {
             try
@@ -141,6 +224,9 @@ namespace RestaurantInformationSystem
                 Console.WriteLine(ex.ToString());
             }
         }
+        /// <summary>
+        /// Creating database if it does not exist. It helps preventing bugs.
+        /// </summary>
         public void createDatabaseTableIfNeccessary()
         {
             try
@@ -164,7 +250,9 @@ namespace RestaurantInformationSystem
             connection.Close();
             Console.WriteLine("Done.");
         }
-
+        /// <summary>
+        /// Getting order from the database when starting the application.
+        /// </summary>
         public void gettingOrderFromDataBase()
         {
             try
@@ -226,6 +314,9 @@ namespace RestaurantInformationSystem
                 Console.WriteLine(ex.ToString());
             }
         }
+        /// <summary>
+        /// Getting order from the database when starting the application.
+        /// </summary>
         public void gettingReservation()
         {
             try

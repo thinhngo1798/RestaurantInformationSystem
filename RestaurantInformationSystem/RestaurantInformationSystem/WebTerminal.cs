@@ -55,7 +55,10 @@ namespace RestaurantInformationSystem
             Database.Orders.Add(newOrder);
         }
 
-        // For reservation function
+        /// <summary>
+        ///  For reservation function
+        /// </summary>
+        /// <returns></returns>
         public string retreiveReservation()
         {
             string reservationsString = "";

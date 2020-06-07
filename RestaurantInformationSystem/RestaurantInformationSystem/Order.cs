@@ -18,6 +18,7 @@ namespace RestaurantInformationSystem
         private Transaction _transaction;
         private int _orderWaitingTime;
         private string _orderTime;
+        private double _totalPrice;
 
         public int Id { get => _id; set => _id = value; }
         public List<MenuItem> MenuItems { get => _menuItem; set => _menuItem = value; }
@@ -29,6 +30,7 @@ namespace RestaurantInformationSystem
         public string DeviceCode { get => _deviceCode; set => _deviceCode = value; }
         public int OrderWaitingTime { get => _orderWaitingTime; set => _orderWaitingTime = value; }
         public string OrderTime { get => _orderTime; set => _orderTime = value; }
+        public double TotalPrice { get => _totalPrice; set => _totalPrice = value; }
 
         public Order(string devideCode,int id, bool dineInFlag, List<MenuItem> orderItems)
         {
@@ -39,8 +41,18 @@ namespace RestaurantInformationSystem
             DineInFlag = dineInFlag;
             Status = "PENDING";
             OrderWaitingTime = calculateWaitingTime();
+            TotalPrice = calculateTotalPrice();
             OrderTime = DateTime.Now.ToString("dd-MM-yyyy HH:mm tt");
             Transaction = new Transaction(orderItems);
+        }
+        public double calculateTotalPrice()
+        {
+            double price = 0.0;
+            foreach (MenuItem item in MenuItems)
+            {
+                price += item.Price;
+            }
+            return price;
         }
         public void changeStatus(string status)
         {

@@ -9,7 +9,7 @@ namespace RestaurantInformationSystem
     public class CashierTerminal : StaffInterface, IReserver, IObserver
     {
         public const int MAX_RESERVATION_AT_A_TIME = 2;
-
+        // Using abstraction to encapsulate data.
         private string _cashierCode;
         private string _stateForReservation;
         private bool _successFlag;
@@ -17,15 +17,25 @@ namespace RestaurantInformationSystem
 
         public string StateForReservation { get => _stateForReservation; set => _stateForReservation = value; }
         public string CashierCode { get => _cashierCode; set => _cashierCode = value; }
+        //Indicator flags for reservation functions
         public bool SuccessFlag { get => _successFlag; set => _successFlag = value; }
         public bool noErrorFlag { get => _noErrorFlag; set => _noErrorFlag = value; }
 
+        /// <summary>
+        /// Constructor of Cashier terminal calls the constructor of the base class (parent class).
+        /// </summary>
+        /// <param name="cashierCode"></param>
+        /// <param name="database"></param>
         public CashierTerminal(string cashierCode, Database database) : base(database)
         {
             CashierCode = cashierCode;
             StateForReservation = "stage1";
             SuccessFlag = true;
         }
+        /// <summary>
+        /// Show the reservation
+        /// </summary>
+        /// <returns></returns>
         public string retreiveReservation()
         {
             string reservationsString = "";
@@ -40,20 +50,13 @@ namespace RestaurantInformationSystem
             }
             return reservationsString;
         }
-
-        public void deleteReservation(int id)
-        {
-            foreach (Reservation re in Database.Reservations)
-            {
-                if (re.Id == id)
-                {
-                    Database.Reservations.Remove(re);
-                }
-            }
-        }
-
+        /// <summary>
+        /// Getting input interface for reservation
+        /// </summary>
+        /// <param name="input"></param>
         public void getReservationInput(string input)
         {
+            // Fields to contain the input data
             noErrorFlag = true;
             OutputString = "";
             DateTime time = new DateTime();
@@ -125,8 +128,10 @@ namespace RestaurantInformationSystem
             {
                 createReservation(time, numberOfPeople, customerName, phoneNumber, email);
             }
-
         }
+        /// <summary>
+        /// Creating output interface for reservation
+        /// </summary>
         public void renderReservationUI()
         {
             if (StateForReservation =="stage1")
@@ -166,6 +171,25 @@ namespace RestaurantInformationSystem
                 OutputString = "There are no more space to book on that time. Please pick a different time";
             }
         }
+        /// <summary>
+        /// Deleting reservation
+        /// </summary>
+        /// <param name="id"></param>
+        public void deleteReservation(int id)
+        {
+            foreach (Reservation re in Database.Reservations)
+            {
+                if (re.Id == id)
+                {
+                    Database.Reservations.Remove(re);
+                }
+            }
+        }
+        /// <summary>
+        /// Checking whether two reservation are clashing.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <returns></returns>
         public bool checkClashing(DateTime time)
         {
             bool result = true;
@@ -182,7 +206,10 @@ namespace RestaurantInformationSystem
             }
             return result;
         }
-
+        /// <summary>
+        /// Observation Pattern
+        /// </summary>
+        /// <param name="subject"></param>
         public void Update(ISubject subject)
         {
             if ((subject as Order).Status == "PENDING")
