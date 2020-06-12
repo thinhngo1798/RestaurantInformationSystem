@@ -22,6 +22,15 @@ namespace RestaurantInformationSystem
         public string PhoneNumber { get => _phoneNumber; set => _phoneNumber = value; }
         public string Email { get => _email; set => _email = value; }
 
+        /// <summary>
+        /// Initilize a new reservation instand by data provided.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="time"></param>
+        /// <param name="people"></param>
+        /// <param name="name"></param>
+        /// <param name="phoneNumber"></param>
+        /// <param name="email"></param>
         public Reservation (int id, DateTime time, int people, string name, string phoneNumber, string email)
         {
             Id = id;

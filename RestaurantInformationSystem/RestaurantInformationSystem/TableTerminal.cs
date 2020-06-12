@@ -18,9 +18,10 @@ namespace RestaurantInformationSystem
             TableCode = tableCode;
             DineInFlag = true;
         }
-        public override void createOrder(string input, bool dineInFlag, Restaurant restaurant)
+        public override void CreateOrder(string input, bool dineInFlag,string orderDeviceCode, Restaurant restaurant)
         {
             List<MenuItem> orderItems = new List<MenuItem>();
+            Order newOrder;
             for (int i = 0; i < input.Length; i++)
             {
                 foreach (MenuItem item in Database.Menu.MenuList)
@@ -31,7 +32,14 @@ namespace RestaurantInformationSystem
                 }
             }
             int orderId = Database.Orders.Count();
-            Order newOrder = new Order(TableCode, orderId + 1, dineInFlag, orderItems);
+            if (orderDeviceCode != "")
+            {
+                newOrder = new Order(orderDeviceCode, orderId + 1, dineInFlag, orderItems);
+            }
+            else
+            {
+                newOrder = new Order(DeviceCode, orderId + 1, dineInFlag, orderItems);
+            }
             newOrder.Attach(restaurant.KitchenTerminal);
             newOrder.Attach(restaurant.CashierTerminal);
             newOrder.Notify();

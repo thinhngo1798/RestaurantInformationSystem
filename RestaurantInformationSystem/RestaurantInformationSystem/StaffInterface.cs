@@ -8,20 +8,22 @@ namespace RestaurantInformationSystem
 {
     public class StaffInterface
     {
+        // Encapsulation and abstraction.
         private Database _database;
         private string _stateForStatus;
         private string _stateForStatistic;
         private string _stateForPayment;
         private string _stateForDeleteAnOrder;
         private string _stateForDeleteAReservation;
-        private int _selectedID;
-        private int _selectedTask;
+        private int    _selectedID;
+        private int    _selectedTask;
         private string _newStatus;
         private string _outputString;
         private string _reservationNotification;
         private string _orderNotification;
         private string _changeOrderNotification;
 
+        // Using auto properties. 
         public Database Database { get => _database; set => _database = value; }
         public string StateForStatus { get => _stateForStatus; set => _stateForStatus = value; }
         public int SelectedID { get => _selectedID; set => _selectedID = value; }
@@ -47,6 +49,11 @@ namespace RestaurantInformationSystem
             StateForDeleteAnOrder = "select";
             StateForDeleteAReservation = "select";
         }
+        /// <summary>
+        /// Interacting with the input from GUI.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="restaurant"></param>
         public void getInput(string input, Restaurant restaurant = null)
         {
             if (Database.CurrentFunction == "deleteAReservationFunction")
@@ -63,7 +70,7 @@ namespace RestaurantInformationSystem
                         if (isANumber(input))
                         {
                             SelectedID = int.Parse(input);
-                            Database.RemovingReservation(Database.Reservations.ElementAt(SelectedID-1));
+                            Database.RemovingReservation(Database.Reservations.ElementAt(SelectedID - 1));
                             OutputString = "Your reservation has been deleted.";
 
                         }
@@ -141,7 +148,7 @@ namespace RestaurantInformationSystem
                                 + Environment.NewLine + "Time: " + DateTime.Now;
                             NewStatus = "PAID";
                             changeOrderStatus();
-                            Database.Orders.ElementAt(SelectedID - 1).Transaction.payTransaction();
+                            StateForPayment = "select";
                         }
                         else
                         {
@@ -171,11 +178,11 @@ namespace RestaurantInformationSystem
                             SelectedTask = int.Parse(input);
                             if (SelectedTask == 1)
                             {
-                                OutputString = Database.Statistic.mostCommonMenuItem();
+                                OutputString = Database.Statistic.MostCommonMenuItem();
                             }
                             else if (SelectedTask == 2)
                             {
-                                OutputString = Database.Statistic.showMostCommonOrderTime();
+                                OutputString = Database.Statistic.ShowMostCommonOrderTime();
                             }
                         }
                         else
@@ -218,6 +225,7 @@ namespace RestaurantInformationSystem
                             OutputString = "Your request is done";
                             NewStatus = input;
                             changeOrderStatus();
+                            StateForStatus = "select";
                         }
                         else
                         {
@@ -257,9 +265,14 @@ namespace RestaurantInformationSystem
         }
         public void changeOrderStatus()
         {
-            Database.Orders.ElementAt(SelectedID-1).changeStatus( NewStatus);
+            
+            Database.Orders.ElementAt(SelectedID-1).changeStatus(NewStatus);
+            Database.UpdateOrderStatus(Database.Orders.ElementAt(SelectedID - 1));
         }
-
+        /// <summary>
+        /// Creating User interface.
+        /// </summary>
+        /// <returns></returns>
         public string renderUI()
         {
             if (Database.CurrentFunction == "deleteAReservationFunction")

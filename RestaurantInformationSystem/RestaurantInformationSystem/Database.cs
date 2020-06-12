@@ -83,6 +83,7 @@ namespace RestaurantInformationSystem
         {
             Orders.Remove(order);
             removeOrder(order);
+            removeItemOfAnOrder(order);
         }
         /// <summary>
         /// Adding reservations to both database.
@@ -200,6 +201,25 @@ namespace RestaurantInformationSystem
                 Console.WriteLine(ex.ToString());
             }
         }
+        public void removeItemOfAnOrder(Order order)
+        {
+            try
+            {
+                Console.WriteLine("Connecting to MySQL to delete items of an order");
+                connection.Open();
+                string sqlTemplate = "DELETE FROM orderItems WHERE orderId = {0};";
+                string sql = string.Format(sqlTemplate, order.Id);
+                MySqlCommand cmd = new MySqlCommand(sql, connection);
+                MySqlDataReader rdr = cmd.ExecuteReader();
+                rdr.Close();
+                connection.Close();
+                Console.WriteLine("Done.");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.ToString());
+            }
+        }
         /// <summary>
         /// Saving reservation to online database.
         /// </summary>
@@ -265,15 +285,15 @@ namespace RestaurantInformationSystem
 
                
                 // Information for an order.
-                int[] _id = new int[5];
-                int[] _numberOfItem = new int[5];
-                string[] _status = new string[5];
-                bool[] _dineInFlag = new bool[5];
-                string[] _transactionStatus = new string[5];
-                int[] _orderWaitingTime = new int[5];
-                string[] _dateTimes = new string[5];
+                int[] _id = new int[10];
+                int[] _numberOfItem = new int[10];
+                string[] _status = new string[10];
+                bool[] _dineInFlag = new bool[10];
+                string[] _transactionStatus = new string[10];
+                int[] _orderWaitingTime = new int[10];
+                string[] _dateTimes = new string[10];
                 // Information for an menu item.
-                int[] id = new int[5];
+                int[] id = new int[10];
                 int counter = 0;
                 while (rdr.Read())
                 {
@@ -328,12 +348,12 @@ namespace RestaurantInformationSystem
                 MySqlDataReader rdr = cmd.ExecuteReader();
 
                 // Information for an order.
-                int[] _id = new int[5];
-                string[] _dateTimes = new string[5];
-                int[] _numberOfPeople = new int[5];
-                string[] name = new string[5];
-                int[] phoneNumber = new int[5];
-                string[] email = new string[5];
+                int[] _id = new int[10];
+                string[] _dateTimes = new string[10];
+                int[] _numberOfPeople = new int[10];
+                string[] name = new string[10];
+                int[] phoneNumber = new int[10];
+                string[] email = new string[10];
                 int counter = 0;
                 while (rdr.Read())
                 {
@@ -385,6 +405,10 @@ namespace RestaurantInformationSystem
             Reservation newReservation = new Reservation(id, time, people, name, phoneNumber, email);
             Reservations.Add(newReservation);
         }
-
+        public void UpdateOrderStatus(Order order)
+        {
+            RemovingOrder(order);
+            AddingOrder(order);
+        }
     }
 }

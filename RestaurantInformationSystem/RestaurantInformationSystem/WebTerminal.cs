@@ -35,9 +35,10 @@ namespace RestaurantInformationSystem
         /// gererating new orders and adding them in Orderslist.
         /// </summary>
         /// <param name="input"></param>
-        public override void createOrder(string input, bool dineInFlag, Restaurant restaurant)
+        public override void CreateOrder(string input, bool dineInFlag, string orderDeviceCode, Restaurant restaurant)
         {
             List<MenuItem> orderItems = new List<MenuItem>();
+            Order newOrder;
             for (int i = 0; i < input.Length; i++)
             {
                 foreach (MenuItem item in Database.Menu.MenuList)
@@ -48,7 +49,14 @@ namespace RestaurantInformationSystem
                 }
             }
             int orderId = Database.Orders.Count();
-            Order newOrder = new Order(WebTerminalCode,orderId + 1, dineInFlag, orderItems);
+            if (orderDeviceCode != "")
+            {
+                newOrder = new Order(orderDeviceCode, orderId + 1, dineInFlag, orderItems);
+            }
+            else
+            {
+                newOrder = new Order(DeviceCode, orderId + 1, dineInFlag, orderItems);
+            }
             newOrder.Attach(restaurant.KitchenTerminal);
             newOrder.Attach(restaurant.CashierTerminal);
             newOrder.Notify();
@@ -59,7 +67,7 @@ namespace RestaurantInformationSystem
         ///  For reservation function
         /// </summary>
         /// <returns></returns>
-        public string retreiveReservation()
+        public string RetreiveReservation()
         {
             string reservationsString = "";
             foreach (Reservation re in Database.Reservations)
@@ -74,7 +82,7 @@ namespace RestaurantInformationSystem
             return reservationsString;
         }
 
-        public void deleteReservation(int id)
+        public void DeleteReservation(int id)
         {
             foreach (Reservation re in Database.Reservations)
             {
@@ -156,7 +164,7 @@ namespace RestaurantInformationSystem
             }
             if (StateForReservation == "stage2")
             {
-                createReservation(time, numberOfPeople, customerName, phoneNumber, email);
+                CreateReservation(time, numberOfPeople, customerName, phoneNumber, email);
             }
 
         }
@@ -186,7 +194,7 @@ namespace RestaurantInformationSystem
         /// <param name="name"></param>
         /// <param name="phoneNumber"></param>
         /// <param name="email"></param>
-        public void createReservation(DateTime time, int people, string name, string phoneNumber, string email)
+        public void CreateReservation(DateTime time, int people, string name, string phoneNumber, string email)
         {
             int id = Database.Reservations.Count() + 1;
             Reservation newReservation = new Reservation(id, time, people, name, phoneNumber, email);

@@ -9,7 +9,9 @@ namespace RestaurantInformationSystem
     public class Menu
     {
         private List<MenuItem> _menuList;
-
+        /// <summary>
+        /// The constructor is used to initialize the Menu with 6 items.
+        /// </summary>
         public Menu()
         {
             MenuList = new List<MenuItem>();

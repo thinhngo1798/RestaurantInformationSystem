@@ -15,11 +15,13 @@ namespace RestaurantInformationSystem
         private Restaurant _restaurant;
         private static Timer _timer;
         private int _currentOrderId;
+        private string _orderDeviceCode;
 
         public Restaurant Restaurant { get => _restaurant; set => _restaurant = value; }
         public static Timer Timer { get => _timer; set => _timer = value; }
         public int CurrentOrderId { get => _currentOrderId; set => _currentOrderId = value; }
-       
+        public string OrderDeviceCode { get => _orderDeviceCode; set => _orderDeviceCode = value; }
+
         public Form1(Restaurant restaurant)
         {
             InitializeComponent();
@@ -28,10 +30,14 @@ namespace RestaurantInformationSystem
 
         private void button1_Click(object sender, EventArgs e)
         {
-            Restaurant.TableTerminal.getInput(input.Text,Restaurant);
+            Restaurant.TableTerminal.getInput(input.Text,Restaurant,OrderDeviceCode);
             output.Text = Restaurant.TableTerminal.renderUI();
         }
 
+        public void AcceptingRequestFromCashierTerminal( string deviceCode)
+        {
+            OrderDeviceCode = deviceCode;
+        }
 
 
         private void textBox1_TextChanged(object sender, EventArgs e)
@@ -41,7 +47,7 @@ namespace RestaurantInformationSystem
 
         private void button2_Click(object sender, EventArgs e)
         {
-            output.Text = Restaurant.TableTerminal.menuDisplay();
+            output.Text = Restaurant.TableTerminal.MenuDisplay();
         }
 
         private void input_TextChanged(object sender, EventArgs e)

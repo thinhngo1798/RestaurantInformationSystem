@@ -8,7 +8,6 @@ namespace RestaurantInformationSystem
 {
     public class Order : ISubject
     {
-        private int _state = -0;
         private List<IObserver> _observers = new List<IObserver>();
         private string _deviceCode;
         private int _id;
@@ -25,16 +24,21 @@ namespace RestaurantInformationSystem
         public string Status { get => _status; set => _status = value; }
         internal Transaction Transaction { get => _transaction; set => _transaction = value; }
         public bool DineInFlag { get => _dineInFlag; set => _dineInFlag = value; }
-        public int State { get => _state; set => _state = value; }
         public List<IObserver> Observers { get => _observers; set => _observers = value; }
         public string DeviceCode { get => _deviceCode; set => _deviceCode = value; }
         public int OrderWaitingTime { get => _orderWaitingTime; set => _orderWaitingTime = value; }
         public string OrderTime { get => _orderTime; set => _orderTime = value; }
         public double TotalPrice { get => _totalPrice; set => _totalPrice = value; }
-
+        
+        /// <summary>
+        /// Constructor used to initialize a new order.
+        /// </summary>
+        /// <param name="devideCode"></param>
+        /// <param name="id"></param>
+        /// <param name="dineInFlag"></param>
+        /// <param name="orderItems"></param>
         public Order(string devideCode,int id, bool dineInFlag, List<MenuItem> orderItems)
         {
-            // Need instantiate?
             DeviceCode = devideCode;
             Id = id;
             MenuItems = orderItems;
@@ -45,6 +49,10 @@ namespace RestaurantInformationSystem
             OrderTime = DateTime.Now.ToString("dd-MM-yyyy HH:mm tt");
             Transaction = new Transaction(orderItems);
         }
+        /// <summary>
+        /// Total cost of this order.
+        /// </summary>
+        /// <returns></returns>
         public double calculateTotalPrice()
         {
             double price = 0.0;
@@ -54,16 +62,46 @@ namespace RestaurantInformationSystem
             }
             return price;
         }
+        /// <summary>
+        /// Calculating waiting time.
+        /// </summary>
+        /// <returns></returns>
+        public int calculateWaitingTime()
+        {
+            int time = 0;
+            foreach (MenuItem item in MenuItems)
+            {
+                time += item.WaitingTime;
+            }
+            return time;
+        }
+        /// <summary>
+        /// Change the status of the current order and notify to all observer.
+        /// </summary>
+        /// <param name="status"></param>
         public void changeStatus(string status)
         {
             Status = status;
+            string newStatus = status.ToUpper();
+            if (newStatus == "PAID")
+            {
+                this.Transaction.payTransaction();
+            }
             Notify();
         }
+        /// <summary>
+        /// Have notification when an item is added.
+        /// </summary>
+        /// <param name="item"></param>
         public void addItem(MenuItem item)
         {
             MenuItems.Add(item);
             Notify();
         }
+        /// <summary>
+        /// Display all menu item in this order.
+        /// </summary>
+        /// <returns></returns>
         public string displayOrder()
         {
             string result = "";
@@ -75,24 +113,27 @@ namespace RestaurantInformationSystem
             result += "Order status is " + Status + Environment.NewLine;
             return result;
         }
-        public int calculateWaitingTime()
-        {
-            int time = 0;
-            foreach (MenuItem item in MenuItems)
-            {
-                    time += item.WaitingTime;
-            }
-            return time;
-        }
+
+        /// <summary>
+        /// Observer Pattern
+        /// </summary>
+        /// <param name="observer"></param>
         public void Attach(IObserver observer)
         {
             this.Observers.Add(observer);
         }
-
+        /// <summary>
+        /// Observer Pattern
+        /// </summary>
+        /// <param name="observer"></param>
         public void Detach(IObserver observer)
         {
             this.Observers.Remove(observer);
         }
+        /// <summary>
+        /// Observer Pattern
+        /// </summary>
+        /// <param name="observer"></param>
         public void Notify()
         {
             foreach (var observer in Observers)

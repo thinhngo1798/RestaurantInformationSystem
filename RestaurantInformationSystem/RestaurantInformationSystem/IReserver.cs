@@ -8,9 +8,9 @@ namespace RestaurantInformationSystem
 {
     public interface IReserver
     {
-        void createReservation(DateTime time, int people, string name, string phoneNumber, string email);
-        string retreiveReservation();
-        void deleteReservation(int id);
+        void CreateReservation(DateTime time, int people, string name, string phoneNumber, string email);
+        string RetreiveReservation();
+        void DeleteReservation(int id);
         bool checkClashing(DateTime time);
     }
 }

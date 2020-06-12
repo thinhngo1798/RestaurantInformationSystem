@@ -43,7 +43,7 @@ namespace RestaurantInformationSystem
         private void button2_Click(object sender, EventArgs e)
         {
             Restaurant.Database.CurrentFunction = "OrderFunction";
-            output.Text = Restaurant.WebTerminal.menuDisplay();
+            output.Text = Restaurant.WebTerminal.MenuDisplay();
         }
 
         private void input_TextChanged(object sender, EventArgs e)
@@ -55,7 +55,7 @@ namespace RestaurantInformationSystem
         {
             if (Restaurant.Database.CurrentFunction == "OrderFunction")
             {
-                Restaurant.WebTerminal.getInput(input.Text, Restaurant);
+                Restaurant.WebTerminal.getInput(input.Text, Restaurant,"");
                 output.Text = Restaurant.WebTerminal.renderUI();
             }
             else if (Restaurant.Database.CurrentFunction == "ReservationFunction")

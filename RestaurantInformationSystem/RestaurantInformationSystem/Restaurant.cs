@@ -21,7 +21,10 @@ namespace RestaurantInformationSystem
         internal CashierTerminal CashierTerminal { get => _cashierTerminal; set => _cashierTerminal = value; }
         public KitchenTerminal KitchenTerminal { get => _kitchenTerminal; set => _kitchenTerminal = value; }
         public GUI Gui { get => _gui; set => _gui = value; }
-
+        /// <summary>
+        /// The center of this application.
+        /// Generating database and all the necessary instances.
+        /// </summary>
         public Restaurant()
         {
             Database = new Database();

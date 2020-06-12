@@ -36,7 +36,7 @@ namespace RestaurantInformationSystem
         /// Show the reservation
         /// </summary>
         /// <returns></returns>
-        public string retreiveReservation()
+        public string RetreiveReservation()
         {
             string reservationsString = "";
             foreach (Reservation re in Database.Reservations)
@@ -88,6 +88,11 @@ namespace RestaurantInformationSystem
                         OutputString += " Your time input is invalid. Please try again." + Environment.NewLine;
                         noErrorFlag = false;
                     }
+                    else if(DateTime.Compare(time,DateTime.Now) < 0)
+                    {
+                        OutputString += "Your time input cannot be early than the time now (cannot be in the past).";
+                        noErrorFlag = false;
+                    }
                     if (words[1] == "")
                     {
                         OutputString += "Your number of people cannot be empty." + Environment.NewLine;
@@ -116,6 +121,7 @@ namespace RestaurantInformationSystem
                 }
                 if (noErrorFlag)
                 {
+
                     time = DateTime.ParseExact(words[0], "dd-MM-yyyy HH:mm tt", null);
                     numberOfPeople = int.Parse(words[1]);
                     customerName = words[2];
@@ -126,7 +132,7 @@ namespace RestaurantInformationSystem
             }
             if (StateForReservation == "stage2")
             {
-                createReservation(time, numberOfPeople, customerName, phoneNumber, email);
+                CreateReservation(time, numberOfPeople, customerName, phoneNumber, email);
             }
         }
         /// <summary>
@@ -158,7 +164,7 @@ namespace RestaurantInformationSystem
         /// <param name="name"></param>
         /// <param name="phoneNumber"></param>
         /// <param name="email"></param>
-        public void createReservation(DateTime time, int people, string name, string phoneNumber, string email)
+        public void CreateReservation(DateTime time, int people, string name, string phoneNumber, string email)
         {
             int id = Database.Reservations.Count() + 1;
             Reservation newReservation = new Reservation(id, time, people, name, phoneNumber,email);
@@ -175,7 +181,7 @@ namespace RestaurantInformationSystem
         /// Deleting reservation
         /// </summary>
         /// <param name="id"></param>
-        public void deleteReservation(int id)
+        public void DeleteReservation(int id)
         {
             foreach (Reservation re in Database.Reservations)
             {

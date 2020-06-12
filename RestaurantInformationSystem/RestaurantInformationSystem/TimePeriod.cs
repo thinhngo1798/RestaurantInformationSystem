@@ -11,6 +11,12 @@ namespace RestaurantInformationSystem
         private TimeSpan _time;
         private int _count;
         private string _name;
+
+        /// <summary>
+        /// Time period of the day.
+        /// </summary>
+        /// <param name="time"></param>
+        /// <param name="name"></param>
         public TimePeriod(TimeSpan time, string name)
         {
             Time = time;

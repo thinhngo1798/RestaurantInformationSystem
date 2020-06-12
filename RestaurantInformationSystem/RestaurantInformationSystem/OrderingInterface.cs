@@ -8,24 +8,36 @@ namespace RestaurantInformationSystem
 {
     public class OrderingInterface 
     {
+        // Using abstraction and encapsulation of data.
         private Database _database;
         private bool _dineInFlag = true;
         private string _deviceCode ="";
         private string _outputString = "";
-        private string _inputstate ;
+        private string _inputState ;
         private bool _cancelOrder;
+
         public bool DineInFlag { get => _dineInFlag; set => _dineInFlag = value; }
         public Database Database { get => _database; set => _database = value; }
         public string DeviceCode { get => _deviceCode; set => _deviceCode = value; }
         public string OutputString { get => _outputString; set => _outputString = value; }
-        public string Inputstate { get => _inputstate; set => _inputstate = value; }
+        public string Inputstate { get => _inputState; set => _inputState = value; }
         public bool CancelOrder { get => _cancelOrder; set => _cancelOrder = value; }
 
+        /// <summary>
+        /// Ordering interface is the parent of TableTerminal and WebTerminal.
+        /// The database will be passed by derived classes.
+        /// </summary>
+        /// <param name="database"></param>
         public OrderingInterface(Database database)
         {
             Database = database;
         }
-        public void getInput(string input, Restaurant restaurant)
+        /// <summary>
+        /// Getting input from user.
+        /// </summary>
+        /// <param name="input"></param>
+        /// <param name="restaurant"></param>
+        public void getInput(string input, Restaurant restaurant,string orderDeviceCode)
         {
             if ((input == "cancel") && (Database.Orders.Count() != 0))
             {
@@ -40,7 +52,7 @@ namespace RestaurantInformationSystem
                 if (ANumberFlag)
                 {
                     Inputstate = "valid";
-                    createOrder(input, DineInFlag, restaurant);
+                    CreateOrder(input, DineInFlag, orderDeviceCode, restaurant);
                 }
                 else
                 {
@@ -50,6 +62,10 @@ namespace RestaurantInformationSystem
                 }
             }
         }
+        /// <summary>
+        /// Generating User Interface
+        /// </summary>
+        /// <returns></returns>
         public string renderUI()
         
         {
@@ -82,14 +98,18 @@ namespace RestaurantInformationSystem
             return orderResult;
             
         }
-
-        public string menuDisplay()
+        /// <summary>
+        /// Display all menu's items for customers.
+        /// </summary>
+        /// <returns></returns>
+        public string MenuDisplay()
         {
             string menuInformation = "";
             foreach (MenuItem item in Database.Menu.MenuList)
             {
                 menuInformation += item.Id +"       Name:" +item.Name + "     Price:" + item.Price + "$       Waiting time:" + item.WaitingTime + Environment.NewLine;
             }
+            menuInformation += "Please choose one or multiple item that you want to order by inserting the item's id:";
             return menuInformation;
         }
         /// <summary>
@@ -97,9 +117,10 @@ namespace RestaurantInformationSystem
         /// gererating new orders and adding them in Orderslist.
         /// </summary>
         /// <param name="input"></param>
-        public virtual void createOrder(string input, bool dineInFlag , Restaurant restaurant = null)
+        public virtual void CreateOrder(string input, bool dineInFlag , string orderDeviceCode, Restaurant restaurant = null)
         {
             List<MenuItem> orderItems = new List<MenuItem>();
+            Order newOrder;
             for (int i = 0; i < input.Length; i++)
             {
                 foreach (MenuItem item in Database.Menu.MenuList)
@@ -110,7 +131,14 @@ namespace RestaurantInformationSystem
                 }
             }
             int orderId = Database.Orders.Count();
-            Order newOrder = new Order(DeviceCode,orderId+1,dineInFlag, orderItems);
+            if (orderDeviceCode != "")
+            {
+                newOrder = new Order(orderDeviceCode, orderId + 1, dineInFlag, orderItems);
+            }
+            else
+            {
+                newOrder = new Order(DeviceCode, orderId + 1, dineInFlag, orderItems);
+            }
             Database.AddingOrder(newOrder);
         }
     }

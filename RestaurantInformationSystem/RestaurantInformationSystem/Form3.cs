@@ -108,7 +108,7 @@ namespace RestaurantInformationSystem
         private void button4_Click(object sender, EventArgs e)
         {
             Restaurant.Database.CurrentFunction = "ReservationFunction";
-            output.Text = Restaurant.CashierTerminal.retreiveReservation();
+            output.Text = Restaurant.CashierTerminal.RetreiveReservation();
         }
 
         private void button5_Click(object sender, EventArgs e)
@@ -164,6 +164,14 @@ namespace RestaurantInformationSystem
             Restaurant.Database.CurrentFunction = "deleteAReservationFunction";
             Restaurant.CashierTerminal.OutputString = "";
             output.Text = Restaurant.CashierTerminal.renderUI();
+        }
+
+        private void button10_Click(object sender, EventArgs e)
+        {
+            this.Hide();
+            Form1 f1 = Restaurant.Gui.Form1;
+            f1.Show();
+            //this.Close();
         }
     }
 }

@@ -12,6 +12,11 @@ namespace RestaurantInformationSystem
         private double _cost;
         private DateTime _createTime;
         private DateTime _paymentTime;
+        /// <summary>
+        /// Taking care of transaction and validation.
+        /// It is not required in this assignment.
+        /// </summary>
+        /// <param name="orderItems"></param>
         public Transaction(List<MenuItem> orderItems)
         {
             Status = "PENDING";

@@ -42,7 +42,7 @@ namespace RestaurantInformationSystem
         {
             if (Restaurant.Database.CurrentFunction == "OrderFunction")
             {
-                Restaurant.TableTerminal.getInput(input.Text, Restaurant);
+                Restaurant.TableTerminal.getInput(input.Text, Restaurant,"");
                 output.Text = Restaurant.TableTerminal.renderUI();
             }
         }

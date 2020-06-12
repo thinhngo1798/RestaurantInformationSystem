@@ -11,17 +11,26 @@ namespace RestaurantInformationSystem
         private int[] _itemArray;
         private Database _database;
 
+        /// <summary>
+        /// Array contains the frequency of being ordered of each menu item.
+        /// </summary>
         public int[] ItemArray { get => _itemArray; set => _itemArray = value; }
         public Database Database { get => _database; set => _database = value; }
-
+        /// <summary>
+        /// Accessing database to make statistic summary.
+        /// </summary>
+        /// <param name="database"></param>
         public Statistic(Database database)
         {
             ItemArray = new int[7];
             Database = database;
         }
 
-
-        public string mostCommonMenuItem()
+        /// <summary>
+        /// Function 1: The meal that has been ordered the most.
+        /// </summary>
+        /// <returns></returns>
+        public string MostCommonMenuItem()
         {
             string result = "";
             for (int g=0; g<=6; g++)
@@ -66,8 +75,11 @@ namespace RestaurantInformationSystem
                 return "There is no data";
             }
         }
-
-        public string showMostCommonOrderTime()
+        /// <summary>
+        /// The busiest time of the date for the restaurant.
+        /// </summary>
+        /// <returns></returns>
+        public string ShowMostCommonOrderTime()
         {
             for (int g = 0; g <= 6; g++)
             {
@@ -132,84 +144,5 @@ namespace RestaurantInformationSystem
                 return "There is something wrong.";
 
         }
-
-        //public string showMenuItemAscending()
-        //{
-        //    int max = ItemArray[1];
-        //    int maxid = 1;
-        //    for (int i = 2; i <= 6; i++)
-        //    {
-        //        if (ItemArray[i] > max)
-        //        {
-        //            max = ItemArray[i];
-        //            maxid = i;
-        //        }
-        //    }
-        //    for (int l=0; l <= max; l++ )
-        //    {
-        //        for (int k=0;k<6;k++)
-        //        {
-
-        //        }
-        //    }
-        //    string result = "";
-        //    initializeArray(Database.Orders);
-        //    List<MenuItem> menuList = Database.Menu.MenuList;
-        //    result = "The menu item list from most common to least common item which have been ordered is: " + Environment.NewLine;
-        //    for (int i=1;i <= 6; i++)
-        //    {
-        //        if (ItemArray[i] == 0)
-        //        {
-        //            continue;
-        //        }
-        //    result += "Id: " + menuList[i]+ "Price:" + mostCommonDish.Price + "$       Waiting time:" + mostCommonDish.WaitingTime + Environment.NewLine;
-        //    }
-        //}
-        //public void initializeArray(List<Order> orders)
-        //{
-        //    foreach (Order order in orders)
-        //    {
-        //        foreach (MenuItem item in order.MenuItems)
-        //        {
-        //            ItemArray[item.Id]++;
-        //        }
-        //    }
-
-        //    int max = ItemArray[1];
-        //    int maxid = 1;
-        //    for (int i= 2; i<=6; i++)
-        //    {
-        //        if (ItemArray[i]>max)
-        //        {
-        //            max = ItemArray[i];
-        //            maxid = i;
-        //        }
-        //    }
-
-        //}
-
-        //public int[] sortingDescending(int[] dishIds)
-        //{
-        //    for (int i=1; i<6;i++)
-        //    {
-        //        for (int j = i; j>0;j--)
-        //        {
-        //            if (dishIds[j-1] < dishIds[j])
-        //            {
-        //                dishIds = swap(dishIds, j - 1, j);
-        //            }
-        //        }
-        //    }
-        //    return dishIds;
-        //}
-        //public int[] swap(int[] dishIds, int i, int j)
-        //{
-        //    int temp;
-        //    temp = dishIds[i];
-        //    dishIds[i] = dishIds[j];
-        //    dishIds[j] = temp;
-        //    return dishIds;
-
-        //}
     }
 }
